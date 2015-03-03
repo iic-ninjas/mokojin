@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.Pair;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +50,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
         private Player mPlayer;
+        private Integer mCharacter1idx;
+        private Integer mCharacter2idx;
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
@@ -83,6 +85,18 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             }, Task.UI_THREAD_EXECUTOR);
         }
 
+        private Pair<Character, Character> selectedCharacters() {
+            if (mCharacter1idx != null && mCharacter2idx != null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacter1idx), mCharacterAdapter.getItem(mCharacter2idx));
+            } else if (mCharacter1idx != null && mCharacter2idx == null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacter1idx), null);
+            } else if (mCharacter1idx == null && mCharacter2idx != null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacter2idx), null);
+            } else {
+                return null;
+            }
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -94,7 +108,24 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             mCharacterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                refreshDoneMenuItem();
+                    if (mCharacter1idx == null){
+                        mCharacter1idx = position;
+                    } else if (mCharacter1idx == position){
+                        mCharacter1idx = null;
+                        if (null != mCharacter2idx){
+                            mCharacter1idx = mCharacter2idx;
+                            mCharacter2idx = null;
+                        }
+                    } else if (mCharacter2idx == null) {
+                        mCharacter2idx = position;
+                    } else if (mCharacter2idx == position){
+                        mCharacter2idx = null;
+                    } else {
+                        mCharacterListView.setItemChecked(mCharacter1idx, false);
+                        mCharacter1idx = mCharacter2idx;
+                        mCharacter2idx = position;
+                    }
+                    refreshDoneMenuItem();
                 }
             });
             return rootView;
@@ -105,29 +136,10 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
         
         private boolean validSelectionCount(){
-            SparseBooleanArray positions = mCharacterListView.getCheckedItemPositions();
-            int counter = 0;
-            for (int i = 0; i < mCharacterAdapter.getCount(); i++){
-                if (positions.get(i)) counter++;
-            }
-            return counter == 1 || counter == 2;
+            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacter1idx), String.valueOf(mCharacter2idx)));
+            return mCharacter1idx != null;
         }
 
-        private Pair<Character, Character> selectedCharacters(){
-            SparseBooleanArray positions = mCharacterListView.getCheckedItemPositions();
-            Character c1 = null;
-            Character c2 = null;
-            for (int i = 0; i < mCharacterAdapter.getCount(); i++){
-                if (positions.get(i)){
-                    if (null == c1){
-                        c1 = mCharacterAdapter.getItem(i);
-                    } else {
-                        c2 = mCharacterAdapter.getItem(i);
-                    }
-                }
-            }
-            return Pair.create(c1, c2);
-        }
     }
     
     private static class CharacterAdapter extends ParseQueryAdapter<Character>{
