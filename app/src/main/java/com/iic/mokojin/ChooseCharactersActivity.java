@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Pair;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,14 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.SetCharacetersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import bolts.Continuation;
@@ -42,12 +44,9 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class ChooseCharactersFragment extends Fragment {
 
-        @InjectView(R.id.character_list_view) ListView mCharacterListView;
+        @InjectView(R.id.character_list_view) GridView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
         private Player mPlayer;
@@ -73,8 +72,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
 
         private void performDone() {
-            Character[] characters = selectedCharacters();
-            Task<Player> setCharacterTask = new SetCharacetersOperation().run(mPlayer, characters[0], characters[1]);
+            Pair<Character, Character> characterPair = selectedCharacters();
+            Task<Player> setCharacterTask = new SetCharacetersOperation().run(mPlayer, characterPair.first, characterPair.second);
             setCharacterTask.continueWith(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
@@ -87,7 +86,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_choose_character, container, false);
+            View rootView = inflater.inflate(R.layout.choose_character_fragment, container, false);
             ButterKnife.inject(this, rootView);
 
             mCharacterAdapter = new CharacterAdapter(getActivity());
@@ -95,7 +94,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             mCharacterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    refreshDoneMenuItem();
+                refreshDoneMenuItem();
                 }
             });
             return rootView;
@@ -114,26 +113,37 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             return counter == 1 || counter == 2;
         }
 
-        private Character[] selectedCharacters(){
+        private Pair<Character, Character> selectedCharacters(){
             SparseBooleanArray positions = mCharacterListView.getCheckedItemPositions();
-            Character[] selectedChars = new Character[2];
-            int idx = 0;
+            Character c1 = null;
+            Character c2 = null;
             for (int i = 0; i < mCharacterAdapter.getCount(); i++){
                 if (positions.get(i)){
-                    selectedChars[idx++] = mCharacterAdapter.getItem(i);
+                    if (null != c1){
+                        c1 = mCharacterAdapter.getItem(i);
+                    } else {
+                        c2 = mCharacterAdapter.getItem(i);
+                    }
                 }
             }
-            return selectedChars;
+            return Pair.create(c1, c2);
         }
     }
     
     private static class CharacterAdapter extends ParseQueryAdapter<Character>{
-        
+
         public CharacterAdapter(Context context) {
-            super(context, Character.class);
+            super(context, new QueryFactory<Character>() {
+                @Override
+                public ParseQuery<Character> create() {
+                    ParseQuery<Character> query = ParseQuery.getQuery(Character.class);
+                    query.orderByAscending("name");
+                    return query;
+                }
+            });
             setObjectsPerPage(60);
         }
-        
+
         // Customize the layout by overriding getItemView
         @Override
         public View getItemView(Character character, View v, ViewGroup parent) {
@@ -142,7 +152,6 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             }
             super.getItemView(character, v, parent);
 
-            // Add the title view
             TextView titleTextView = (TextView) v.findViewById(R.id.character_name);
             titleTextView.setText(character.getName());
 
