@@ -26,15 +26,4 @@ public class Player extends ParseObject {
         return (Character)getParseObject("characterB");
     }
 
-    public void putPerson(Person person) {
-        put("person", person);
-    }
-
-    public void putCharacterA(Character characterA) {
-        put("characterA", characterA);
-    }
-
-    public void putCharacterB(Character characterB) {
-        put("characterB", characterB);
-    }
 }

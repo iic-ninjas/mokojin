@@ -37,19 +37,6 @@ public class Match extends ParseObject {
         return (Player)getParseObject("playerB");
     }
 
-    public void putWinner(String winner) {
-        put("winner", winner);
-    }
-
-    public void putStartTime(Date startTime) {
-        put("startTime", startTime);
-    }
-
-    public void putEndTime(Date endTime) {
-        put("endTime", endTime);
-    }
-
-
     public static Task<Match> getCurrent() {
         ParseQuery<Match> parseQuery = ParseQuery.getQuery(Match.class);
         parseQuery.whereDoesNotExist("winner");
