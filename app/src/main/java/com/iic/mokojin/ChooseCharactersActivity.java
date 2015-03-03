@@ -119,7 +119,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             Character c2 = null;
             for (int i = 0; i < mCharacterAdapter.getCount(); i++){
                 if (positions.get(i)){
-                    if (null != c1){
+                    if (null == c1){
                         c1 = mCharacterAdapter.getItem(i);
                     } else {
                         c2 = mCharacterAdapter.getItem(i);
