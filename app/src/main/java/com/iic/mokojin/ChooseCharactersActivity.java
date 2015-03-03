@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
+import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.SetCharacetersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.parse.ParseQueryAdapter;
@@ -49,6 +50,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @InjectView(R.id.character_list_view) ListView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
+        private Player mPlayer;
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
@@ -72,10 +74,10 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
         private void performDone() {
             Character[] characters = selectedCharacters();
-            Task<Object> setCharacterTask = new SetCharacetersOperation().run(mPlayer, characters[0], characters[1]);
-            setCharacterTask.continueWith(new Continuation<Object, Object>() {
+            Task<Player> setCharacterTask = new SetCharacetersOperation().run(mPlayer, characters[0], characters[1]);
+            setCharacterTask.continueWith(new Continuation<Player, Object>() {
                 @Override
-                public Object then(Task<Object> task) throws Exception {
+                public Object then(Task<Player> task) throws Exception {
                     getActivity().finish();
                     return null;
                 }
@@ -106,7 +108,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private boolean validSelectionCount(){
             SparseBooleanArray positions = mCharacterListView.getCheckedItemPositions();
             int counter = 0;
-            for (int i = 0; i < positions.size(); i++){
+            for (int i = 0; i < mCharacterAdapter.getCount(); i++){
                 if (positions.get(i)) counter++;
             }
             return counter == 1 || counter == 2;
@@ -116,7 +118,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             SparseBooleanArray positions = mCharacterListView.getCheckedItemPositions();
             Character[] selectedChars = new Character[2];
             int idx = 0;
-            for (int i = 0; i < positions.size(); i++){
+            for (int i = 0; i < mCharacterAdapter.getCount(); i++){
                 if (positions.get(i)){
                     selectedChars[idx++] = mCharacterAdapter.getItem(i);
                 }
