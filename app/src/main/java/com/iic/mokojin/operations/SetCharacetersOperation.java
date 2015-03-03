@@ -23,6 +23,7 @@ public class SetCharacetersOperation {
     
     private HashMap<String, Object> buildParams(Player player, com.iic.mokojin.models.Character characterA, Character characterB){
         HashMap<String, Object> params = new HashMap<>();
+        //TODO: Remove fallback when no player
         params.put("player",  null != player ? player.getObjectId() : "PI9LhRWxxa"); //
         params.put("characterA", characterA.getObjectId());
         params.put("characterB", null != characterB ? characterB.getObjectId() : null);

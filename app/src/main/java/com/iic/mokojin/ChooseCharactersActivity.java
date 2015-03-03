@@ -2,9 +2,9 @@ package com.iic.mokojin;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,12 +49,19 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @InjectView(R.id.character_list_view) GridView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
+        
         private Player mPlayer;
         private Integer mCharacter1idx;
         private Integer mCharacter2idx;
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
+        }
+
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            //TODO: Load player from intent.
         }
 
         @Override
@@ -79,6 +86,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             setCharacterTask.continueWith(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
+                    Player player = task.getResult();
+                    //TODO: return the updated player.
                     getActivity().finish();
                     return null;
                 }
@@ -136,7 +145,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
         
         private boolean validSelectionCount(){
-            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacter1idx), String.valueOf(mCharacter2idx)));
+//            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacter1idx), String.valueOf(mCharacter2idx)));
             return mCharacter1idx != null;
         }
 
