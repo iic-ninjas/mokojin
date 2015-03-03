@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operations.SetCharacetersOperation;
+import com.iic.mokojin.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -51,8 +51,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private MenuItem mDoneMenuItem;
         
         private Player mPlayer;
-        private Integer mCharacter1idx;
-        private Integer mCharacter2idx;
+        private Integer mCharacterA;
+        private Integer mCharacterB;
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
@@ -82,7 +82,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
         private void performDone() {
             Pair<Character, Character> characterPair = selectedCharacters();
-            Task<Player> setCharacterTask = new SetCharacetersOperation().run(mPlayer, characterPair.first, characterPair.second);
+            Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
             setCharacterTask.continueWith(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
@@ -95,12 +95,12 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
 
         private Pair<Character, Character> selectedCharacters() {
-            if (mCharacter1idx != null && mCharacter2idx != null){
-                return Pair.create(mCharacterAdapter.getItem(mCharacter1idx), mCharacterAdapter.getItem(mCharacter2idx));
-            } else if (mCharacter1idx != null && mCharacter2idx == null){
-                return Pair.create(mCharacterAdapter.getItem(mCharacter1idx), null);
-            } else if (mCharacter1idx == null && mCharacter2idx != null){
-                return Pair.create(mCharacterAdapter.getItem(mCharacter2idx), null);
+            if (mCharacterA != null && mCharacterB != null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacterA), mCharacterAdapter.getItem(mCharacterB));
+            } else if (mCharacterA != null && mCharacterB == null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacterA), null);
+            } else if (mCharacterA == null && mCharacterB != null){
+                return Pair.create(mCharacterAdapter.getItem(mCharacterB), null);
             } else {
                 return null;
             }
@@ -117,36 +117,40 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             mCharacterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (mCharacter1idx == null){
-                        mCharacter1idx = position;
-                    } else if (mCharacter1idx == position){
-                        mCharacter1idx = null;
-                        if (null != mCharacter2idx){
-                            mCharacter1idx = mCharacter2idx;
-                            mCharacter2idx = null;
-                        }
-                    } else if (mCharacter2idx == null) {
-                        mCharacter2idx = position;
-                    } else if (mCharacter2idx == position){
-                        mCharacter2idx = null;
-                    } else {
-                        mCharacterListView.setItemChecked(mCharacter1idx, false);
-                        mCharacter1idx = mCharacter2idx;
-                        mCharacter2idx = position;
-                    }
-                    refreshDoneMenuItem();
+                    onCharacterClick(position);
                 }
             });
             return rootView;
         }
-        
+
+        private void onCharacterClick(int position) {
+            if (mCharacterA == null){
+                mCharacterA = position;
+            } else if (mCharacterA == position){
+                mCharacterA = null;
+                if (null != mCharacterB){
+                    mCharacterA = mCharacterB;
+                    mCharacterB = null;
+                }
+            } else if (mCharacterB == null) {
+                mCharacterB = position;
+            } else if (mCharacterB == position){
+                mCharacterB = null;
+            } else {
+                mCharacterListView.setItemChecked(mCharacterA, false);
+                mCharacterA = mCharacterB;
+                mCharacterB = position;
+            }
+            refreshDoneMenuItem();
+        }
+
         private void refreshDoneMenuItem(){
             mDoneMenuItem.setEnabled(validSelectionCount());
         }
         
         private boolean validSelectionCount(){
-//            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacter1idx), String.valueOf(mCharacter2idx)));
-            return mCharacter1idx != null;
+//            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacterA), String.valueOf(mCharacterB)));
+            return mCharacterA != null;
         }
 
     }

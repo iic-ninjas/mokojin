@@ -12,7 +12,7 @@ import bolts.Task;
  * Created by yon on 3/3/15.
  */
 
-public class SetCharacetersOperation {
+public class SetCharactersOperation {
 
     public static final String SET_CHARACTER_CLOUD_FUNCTION_NAME = "setCharacter";
 
