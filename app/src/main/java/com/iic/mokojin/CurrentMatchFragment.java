@@ -14,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Match;
+import com.iic.mokojin.models.Models;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operation.EndMatchOperation;
+import com.parse.ParseException;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -97,10 +99,21 @@ public class CurrentMatchFragment extends Fragment {
         frontImageView.setLayoutParams(layoutParams);
     }
 
+    private void showBackImage(ImageView frontImageView, ImageView backImageView) {
+        backImageView.setVisibility(View.VISIBLE);
+
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)frontImageView.getLayoutParams();
+        layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
+        layoutParams.topMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);;
+        layoutParams.gravity = Gravity.NO_GRAVITY;
+        frontImageView.setLayoutParams(layoutParams);
+    }
+
     private void setPlayerImages(Player player, ImageView charA, ImageView charB) {
         if (player.getCharacterA() != null && player.getCharacterB() != null) {
             displayCharacter(player.getCharacterA().getCharacterId(), charA);
             displayCharacter(player.getCharacterB().getCharacterId(), charB);
+            showBackImage(charA, charB);
         } else if (player.getCharacterA() != null) {
             displayCharacter(player.getCharacterA().getCharacterId(), charA);
             hideBackImage(charA, charB);
@@ -150,8 +163,11 @@ public class CurrentMatchFragment extends Fragment {
 
     private void selectCharacter(Player player) {
         Intent selectCharacterIntent = new Intent(getActivity(), ChooseCharactersActivity.class);
-        selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player);
-        startActivity(selectCharacterIntent);
+        try {
+            Models.saveToLocalStorage(player);
+            selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player.getObjectId());
+            startActivity(selectCharacterIntent);
+        } catch (ParseException ignored) {}
     }
 
     @SuppressWarnings("unused")

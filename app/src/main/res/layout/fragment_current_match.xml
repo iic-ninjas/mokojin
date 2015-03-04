@@ -12,103 +12,130 @@
         android:gravity="center" />
 
     <LinearLayout
-        android:id="@+id/players_container"
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:orientation="horizontal"
-        tools:context=".CurrentMatchActivity$PlaceholderFragment">
+        android:orientation="vertical"
+        android:gravity="center">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:id="@+id/players_container"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:context=".CurrentMatchActivity$PlaceholderFragment">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/character_image_large_plus_separation"
-                android:layout_gravity="center">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/player_a_image_back"
-                    android:layout_width="@dimen/large_avatar_size"
-                    android:layout_height="@dimen/large_avatar_size"
-                    android:layout_marginLeft="@dimen/character_separation_amount"
-                    android:layout_marginBottom="@dimen/character_separation_amount"
-                    tools:ignore="RtlHardcoded" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/character_image_large_plus_separation"
+                    android:layout_gravity="center">
 
-                <ImageView
-                    android:id="@+id/player_a_image_front"
-                    android:layout_width="@dimen/large_avatar_size"
-                    android:layout_height="@dimen/large_avatar_size"
-                    android:layout_marginTop="@dimen/character_separation_amount"
-                    android:layout_marginRight="@dimen/character_separation_amount"
-                    tools:ignore="RtlHardcoded" />
+                    <ImageView
+                        android:id="@+id/player_a_image_back"
+                        android:layout_width="@dimen/large_avatar_size"
+                        android:layout_height="@dimen/large_avatar_size"
+                        android:layout_marginLeft="@dimen/character_separation_amount"
+                        android:layout_marginBottom="@dimen/character_separation_amount"
+                        tools:ignore="RtlHardcoded" />
 
-            </FrameLayout>
+                    <ImageView
+                        android:id="@+id/player_a_image_front"
+                        android:layout_width="@dimen/large_avatar_size"
+                        android:layout_height="@dimen/large_avatar_size"
+                        android:layout_marginTop="@dimen/character_separation_amount"
+                        android:layout_marginRight="@dimen/character_separation_amount"
+                        tools:ignore="RtlHardcoded" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/player_a_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/player_a_rank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/player_a_name"
+                android:text="@string/vs"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textSize="30sp"/>
+
+            <LinearLayout
                 android:layout_gravity="center"
-                />
+                android:orientation="vertical"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/character_image_large_plus_separation"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/player_b_image_back"
+                        android:layout_width="@dimen/large_avatar_size"
+                        android:layout_height="@dimen/large_avatar_size"
+                        android:layout_marginLeft="@dimen/character_separation_amount"
+                        android:layout_marginBottom="@dimen/character_separation_amount"
+                        tools:ignore="RtlHardcoded" />
+
+                    <ImageView
+                        android:id="@+id/player_b_image_front"
+                        android:layout_width="@dimen/large_avatar_size"
+                        android:layout_height="@dimen/large_avatar_size"
+                        android:layout_marginTop="@dimen/character_separation_amount"
+                        android:layout_marginRight="@dimen/character_separation_amount"
+                        tools:ignore="RtlHardcoded" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_gravity="center"
+                    android:id="@+id/player_b_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <TextView
+                    android:id="@+id/player_b_rank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
         <TextView
-            android:text="@string/vs"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:layout_width="wrap_content"
+            android:id="@+id/chance_to_win"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:textSize="30sp"/>
-
-        <LinearLayout
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/character_image_large_plus_separation"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/player_b_image_back"
-                    android:layout_width="@dimen/large_avatar_size"
-                    android:layout_height="@dimen/large_avatar_size"
-                    android:layout_marginLeft="@dimen/character_separation_amount"
-                    android:layout_marginBottom="@dimen/character_separation_amount"
-                    tools:ignore="RtlHardcoded" />
-
-                <ImageView
-                    android:id="@+id/player_b_image_front"
-                    android:layout_width="@dimen/large_avatar_size"
-                    android:layout_height="@dimen/large_avatar_size"
-                    android:layout_marginTop="@dimen/character_separation_amount"
-                    android:layout_marginRight="@dimen/character_separation_amount"
-                    tools:ignore="RtlHardcoded" />
-
-            </FrameLayout>
-
-            <TextView
-                android:layout_gravity="center"
-                android:id="@+id/player_b_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
+            />
 
     </LinearLayout>
+
+
 </FrameLayout>
