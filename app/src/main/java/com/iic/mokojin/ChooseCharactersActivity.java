@@ -167,7 +167,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                     return query;
                 }
             });
-            setObjectsPerPage(60);
+            setPaginationEnabled(false);
         }
 
         // Customize the layout by overriding getItemView
