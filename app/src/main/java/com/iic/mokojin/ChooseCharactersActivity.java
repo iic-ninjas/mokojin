@@ -156,7 +156,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
     }
     
-    private static class CharacterAdapter extends ParseQueryAdapter<Character>{
+    static class CharacterAdapter extends ParseQueryAdapter<Character>{
 
         public CharacterAdapter(Context context) {
             super(context, new QueryFactory<Character>() {
@@ -175,16 +175,25 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         public View getItemView(Character character, View v, ViewGroup parent) {
             if (v == null) {
                 v = View.inflate(getContext(), R.layout.character_list_item, null);
+                v.setTag(new CharacterViewHolder(v));
             }
             super.getItemView(character, v, parent);
 
-            TextView titleTextView = (TextView) v.findViewById(R.id.character_name);
-            titleTextView.setText(character.getName());
-
-            ImageView avatarView = (ImageView) v.findViewById(R.id.character_image);
-            avatarView.setImageResource(CharacterPresenter.getImageResource(getContext(), character));
+            CharacterViewHolder viewHolder = (CharacterViewHolder) v.getTag();
+            viewHolder.textView.setText(character.getName());
+            viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(getContext(), character));
 
             return v;
+        }
+        
+        class CharacterViewHolder {
+            @InjectView(R.id.character_name) TextView textView;
+            @InjectView(R.id.character_image) ImageView imageView;
+            
+            public CharacterViewHolder(View view){
+                ButterKnife.inject(this, view);
+            }
+            
         }
     }
 }
