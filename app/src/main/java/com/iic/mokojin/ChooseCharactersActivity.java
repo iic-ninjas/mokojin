@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +28,7 @@ import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 
 public class ChooseCharactersActivity extends ActionBarActivity {
@@ -121,16 +121,11 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
             mCharacterAdapter = new CharacterAdapter(getActivity());
             mCharacterListView.setAdapter(mCharacterAdapter);
-            mCharacterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    onCharacterClick(position);
-                }
-            });
             return rootView;
         }
 
-        private void onCharacterClick(int position) {
+        @OnItemClick(R.id.character_list_view)
+        void onCharacterClick(int position) {
             if (mCharacterA == null){
                 mCharacterA = position;
             } else if (mCharacterA == position){
@@ -156,7 +151,6 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
         
         private boolean validSelectionCount(){
-//            Log.i("SELECTCHARS", String.format("%s %s", String.valueOf(mCharacterA), String.valueOf(mCharacterB)));
             return mCharacterA != null;
         }
 

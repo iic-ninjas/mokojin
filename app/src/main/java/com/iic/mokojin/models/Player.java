@@ -37,6 +37,10 @@ public class Player extends ParseObject implements Parcelable{
 //        dest.writeParcelable(getCharacterA(), flags);
 //        dest.writeParcelable(getCharacterB(), flags);
     }
+
+    public Player() {
+        super();
+    }
     
     public Player(Parcel source) {
         setObjectId(source.readString());
