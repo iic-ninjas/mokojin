@@ -17,14 +17,20 @@ public final class Models {
         ParseObject.registerSubclass(Person.class);
     }
 
-    public static <T extends ParseObject> void saveToLocalStorage(T object) throws ParseException {
-        object.pin();
+    public static <T extends ParseObject> void saveToLocalStorage(T object) {
+        try {
+            object.pin();
+        } catch (ParseException ignored) {}
     }
 
-    public static <T extends ParseObject> T loadFromLocalStorage(Class<T> cls, String objectId) throws ParseException {
-        T object = ParseObject.createWithoutData(cls, objectId);
-        object.fetchFromLocalDatastore();
-        return object;
+    public static <T extends ParseObject> T loadFromLocalStorage(Class<T> cls, String objectId) {
+        try{
+            T object = ParseObject.createWithoutData(cls, objectId);
+            object.fetchFromLocalDatastore();
+            return object;
+        } catch (ParseException ex) {
+            return null;
+        }
     }
 
 

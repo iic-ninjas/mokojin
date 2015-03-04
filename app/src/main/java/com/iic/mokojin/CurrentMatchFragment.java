@@ -10,11 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Match;
-import com.iic.mokojin.models.Models;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operation.EndMatchOperation;
 import com.iic.mokojin.views.CharacterViewer;
-import com.parse.ParseException;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -106,11 +104,11 @@ public class CurrentMatchFragment extends Fragment {
 
     private void selectCharacter(Player player) {
         Intent selectCharacterIntent = new Intent(getActivity(), ChooseCharactersActivity.class);
-        try {
-            Models.saveToLocalStorage(player);
-            selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player.getObjectId());
-            startActivity(selectCharacterIntent);
-        } catch (ParseException ignored) {}
+
+        player.saveToLocalStorage();
+        selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player.getObjectId());
+        startActivity(selectCharacterIntent);
+
     }
 
     @SuppressWarnings("unused")

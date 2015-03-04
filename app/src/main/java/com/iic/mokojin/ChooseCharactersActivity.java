@@ -18,11 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
-import com.iic.mokojin.models.Models;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -70,9 +68,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             Intent intent = getActivity().getIntent();
             if (null != intent){
                 String playerId = intent.getStringExtra(PLAYER_EXTRA);
-                try {
-                    mPlayer = Models.loadFromLocalStorage(Player.class, playerId);
-                } catch (ParseException ignored) {}
+                mPlayer = Player.loadFromLocalStorage(playerId);
             }
         }
 

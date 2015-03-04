@@ -31,4 +31,11 @@ public class Player extends ParseObject {
         super();
     }
 
+    public void saveToLocalStorage() {
+        Models.saveToLocalStorage(this);
+    }
+
+    public static Player loadFromLocalStorage(String objectId) {
+        return Models.loadFromLocalStorage(Player.class, objectId);
+    }
 }
