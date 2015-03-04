@@ -1,6 +1,7 @@
 package com.iic.mokojin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -45,6 +46,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
     }
 
     public static class ChooseCharactersFragment extends Fragment {
+        
+        public static final String PLAYER_EXTRA = "PLAYER_EXT";
 
         @InjectView(R.id.character_list_view) GridView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
@@ -61,7 +64,11 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            //TODO: Load player from intent.
+            
+            Intent intent = getActivity().getIntent();
+            if (null != intent){
+                mPlayer = intent.getParcelableExtra(PLAYER_EXTRA);
+            }
         }
 
         @Override
