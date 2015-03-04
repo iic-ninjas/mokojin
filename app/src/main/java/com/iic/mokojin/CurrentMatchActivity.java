@@ -18,7 +18,7 @@ public class CurrentMatchActivity extends ActionBarActivity {
         setContentView(R.layout.activity_current_match);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new PlayerQueueFragment())
                     .commit();
         }
     }
@@ -57,7 +57,7 @@ public class CurrentMatchActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_player_queue, container, false);
             return rootView;
         }
     }
