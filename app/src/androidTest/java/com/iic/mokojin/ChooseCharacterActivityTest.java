@@ -7,7 +7,4 @@ import android.test.AndroidTestCase;
  */
 public class ChooseCharacterActivityTest extends AndroidTestCase {
     
-    public void testFoo(){
-
-    }
 }
