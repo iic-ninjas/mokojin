@@ -1,5 +1,6 @@
 package com.iic.mokojin.models;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 /**
@@ -17,7 +18,21 @@ public final class Models {
         ParseObject.registerSubclass(QueueItem.class);
     }
 
+    public static <T extends ParseObject> void saveToLocalStorage(T object) {
+        try {
+            object.pin();
+        } catch (ParseException ignored) {}
+    }
 
+    public static <T extends ParseObject> T loadFromLocalStorage(Class<T> cls, String objectId) {
+        try{
+            T object = ParseObject.createWithoutData(cls, objectId);
+            object.fetchFromLocalDatastore();
+            return object;
+        } catch (ParseException ex) {
+            return null;
+        }
+    }
 
 
 }

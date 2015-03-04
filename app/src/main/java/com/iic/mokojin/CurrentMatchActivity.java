@@ -41,4 +41,5 @@ public class CurrentMatchActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
