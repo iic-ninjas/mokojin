@@ -90,7 +90,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private void performDone() {
             Pair<Character, Character> characterPair = selectedCharacters();
             Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
-            setCharacterTask.continueWith(new Continuation<Player, Object>() {
+            setCharacterTask.onSuccess(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
                     Player player = task.getResult();
