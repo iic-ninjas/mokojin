@@ -3,9 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="character_separation_amount">30dp</dimen>
-    <dimen name="character_image_large">120dp</dimen>
+    <dimen name="large_avatar_size">120dp</dimen>
+    <dimen name="small_avatar_size">60dp</dimen>
 
-    <!-- Must be character_separation_amount + character_image_large -->
+    <!-- Must be character_separation_amount + large_avatar_size -->
     <dimen name="character_image_large_plus_separation">150dp</dimen>
+    <dimen name="character_separation_amount">30dp</dimen>
 </resources>

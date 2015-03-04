@@ -2,6 +2,11 @@
     <string name="app_name">Mokojin</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
     <string name="vs">VS</string>
     <string name="no_ongoing_matches">No ongoing matches.</string>
+
+    <string name="title_activity_choose_character">Select Character</string>
+    <string name="done">Done</string>
+
 </resources>
