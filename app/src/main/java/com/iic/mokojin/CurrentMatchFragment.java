@@ -14,11 +14,13 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
+import com.iic.mokojin.operation.EndMatchOperation;
 
 import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 /**
@@ -60,8 +62,7 @@ public class CurrentMatchFragment extends Fragment {
             public Void then(Task<Match> task) throws Exception {
                 if (task.isCancelled()) {
                     Log.d(LOG_TAG, "Fetching of current match was cancelled");
-                }
-                else if (task.isFaulted()) {
+                } else if (task.isFaulted()) {
                     Log.e(LOG_TAG, "Error fetching current match", task.getError());
                 } else {
                     mCurrentMatch = task.getResult();
@@ -124,8 +125,38 @@ public class CurrentMatchFragment extends Fragment {
         }
     }
 
+    private void endMatch(Player.PlayerType playerType) {
+        new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
+            @Override
+            public Void then(Task<Match> task) throws Exception {
+                refreshCurrentMatch();
+                return null;
+            }
+        }, Task.UI_THREAD_EXECUTOR);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick({R.id.player_a_image_front, R.id.player_a_image_back})
+    void onPlayerAClick() {
+        endMatch(Player.PlayerType.PLAYER_A);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick({R.id.player_b_image_front, R.id.player_b_image_back})
+    void onPlayerBClick() {
+        endMatch(Player.PlayerType.PLAYER_B);
+    }
+
+    @SuppressWarnings("unused")
     @OnLongClick({R.id.player_a_image_front, R.id.player_a_image_back})
     boolean onPlayerALongClick() {
+        // TODO: open the character selector activity
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @OnLongClick({R.id.player_b_image_front, R.id.player_b_image_back})
+    boolean onPlayerBLongClick() {
         // TODO: open the character selector activity
         return true;
     }

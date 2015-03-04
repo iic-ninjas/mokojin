@@ -9,6 +9,11 @@ import com.parse.ParseObject;
 @ParseClassName("Player")
 public class Player extends ParseObject {
 
+    public static enum PlayerType {
+        PLAYER_A,
+        PLAYER_B
+    }
+
     public Person getPerson() {
         return (Person)getParseObject("person");
     }
