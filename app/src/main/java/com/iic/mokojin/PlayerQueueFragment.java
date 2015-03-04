@@ -1,8 +1,8 @@
 package com.iic.mokojin;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +54,7 @@ public class PlayerQueueFragment extends Fragment {
                     ParseQuery<QueueItem> query = ParseQuery.getQuery(QueueItem.class);
                     query.orderByDescending("createdAt");
                     query.include("player.person");
+                    query.include("player.characterA");
                     return query;
                 }
             });
@@ -61,14 +62,14 @@ public class PlayerQueueFragment extends Fragment {
         }
 
         @Override
-        public View getItemView(QueueItem queueItem, View v, ViewGroup parent) {
+        public View getItemView(final QueueItem queueItem, View v, ViewGroup parent) {
             if (v == null) {
                 v = View.inflate(getContext(), R.layout.player_queue_item, null);
                 v.setTag(new PlayerQueueItemViewHolder(v));
             }
             super.getItemView(queueItem, v, parent);
 
-            PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) v.getTag();
+            final PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) v.getTag();
             viewHolder.textView.setText(queueItem.getPlayer().getPerson().getName());
             viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(getContext(), queueItem.getPlayer().getCharacterA()));
 

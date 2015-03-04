@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:padding="2dp"
     >
 
@@ -16,6 +17,6 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:id="@+id/player_name"
-        android:textSize="@dimen/abc_text_size_small_material"
+        android:textSize="@dimen/abc_text_size_medium_material"
         />
 </LinearLayout>
