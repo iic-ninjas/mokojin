@@ -13,7 +13,7 @@ import bolts.Task;
  */
 
 public class SetCharactersOperation {
-
+    
     public static final String SET_CHARACTER_CLOUD_FUNCTION_NAME = "setCharacter";
 
     public Task<Player> run(Player player, Character characterA, Character characterB){
