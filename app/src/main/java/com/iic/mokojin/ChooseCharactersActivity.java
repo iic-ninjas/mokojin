@@ -32,7 +32,9 @@ import butterknife.OnItemClick;
 
 
 public class ChooseCharactersActivity extends ActionBarActivity {
-    
+
+    public static final String PLAYER_EXTRA = "PLAYER_EXT";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +49,10 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
     public static class ChooseCharactersFragment extends Fragment {
         
-        public static final String PLAYER_EXTRA = "PLAYER_EXT";
-
         @InjectView(R.id.character_list_view) GridView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
-        
+
         private Player mPlayer;
         private Integer mCharacterA;
         private Integer mCharacterB;
@@ -64,7 +64,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            
+
             Intent intent = getActivity().getIntent();
             if (null != intent){
                 mPlayer = intent.getParcelableExtra(PLAYER_EXTRA);

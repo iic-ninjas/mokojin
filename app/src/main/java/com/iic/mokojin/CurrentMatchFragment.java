@@ -1,5 +1,6 @@
 package com.iic.mokojin;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -147,17 +148,23 @@ public class CurrentMatchFragment extends Fragment {
         endMatch(Player.PlayerType.PLAYER_B);
     }
 
+    private void selectCharacter(Player player) {
+        Intent selectCharacterIntent = new Intent(getActivity(), ChooseCharactersActivity.class);
+        selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player);
+        startActivity(selectCharacterIntent);
+    }
+
     @SuppressWarnings("unused")
     @OnLongClick({R.id.player_a_image_front, R.id.player_a_image_back})
     boolean onPlayerALongClick() {
-        // TODO: open the character selector activity
+        selectCharacter(mCurrentMatch.getPlayerA());
         return true;
     }
 
     @SuppressWarnings("unused")
     @OnLongClick({R.id.player_b_image_front, R.id.player_b_image_back})
     boolean onPlayerBLongClick() {
-        // TODO: open the character selector activity
+        selectCharacter(mCurrentMatch.getPlayerB());
         return true;
     }
 }

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 /**
@@ -37,27 +38,27 @@ public class Player extends ParseObject implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        try {
+            this.pin();
+        }
+        catch (ParseException ignored) {}
         dest.writeString(getObjectId());
-//        dest.writeParcelable(getPerson(), flags);
-//        dest.writeParcelable(getCharacterA(), flags);
-//        dest.writeParcelable(getCharacterB(), flags);
     }
 
     public Player() {
         super();
     }
-    
-    public Player(Parcel source) {
-        setObjectId(source.readString());
-        put("person", source.readParcelable(null));
-        put("characterA", source.readParcelable(null));
-        put("characterB", source.readParcelable(null));
-    }
+
 
     public static final Parcelable.Creator<Player> CREATOR = new Parcelable.Creator<Player>() {
 
         public Player createFromParcel(Parcel in) {
-            return new Player(in);
+            Player player = ParseObject.createWithoutData(Player.class, in.readString());
+            try {
+                player.fetchFromLocalDatastore();
+            }
+            catch (ParseException ignored) {}
+            return player;
         }
 
         public Player[] newArray(int size) {
