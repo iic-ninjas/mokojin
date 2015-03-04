@@ -14,7 +14,9 @@ public class CharacterPresenter {
     public static int getImageResource(Context context, com.iic.mokojin.models.Character character){
         if (character == null) return DEFAULT_IMAGE_RESOURCE;
         String resourceId = "player_".concat(String.valueOf(character.getCharacterId()));
-        return context.getResources().getIdentifier(resourceId, "drawable", context.getPackageName() );
+        String packageName = context.getPackageName();
+        packageName = "com.iic.mokojin";
+        return context.getResources().getIdentifier(resourceId, "drawable", packageName);
     }
 
 }
