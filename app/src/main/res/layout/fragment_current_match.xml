@@ -32,28 +32,11 @@
                 android:layout_gravity="center"
                 android:layout_height="wrap_content">
 
-                <FrameLayout
+                <com.iic.mokojin.views.CharacterViewer
+                    android:id="@+id/player_a_character"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/character_image_large_plus_separation"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:id="@+id/player_a_image_back"
-                        android:layout_width="@dimen/large_avatar_size"
-                        android:layout_height="@dimen/large_avatar_size"
-                        android:layout_marginLeft="@dimen/character_separation_amount"
-                        android:layout_marginBottom="@dimen/character_separation_amount"
-                        tools:ignore="RtlHardcoded" />
-
-                    <ImageView
-                        android:id="@+id/player_a_image_front"
-                        android:layout_width="@dimen/large_avatar_size"
-                        android:layout_height="@dimen/large_avatar_size"
-                        android:layout_marginTop="@dimen/character_separation_amount"
-                        android:layout_marginRight="@dimen/character_separation_amount"
-                        tools:ignore="RtlHardcoded" />
-
-                </FrameLayout>
+                    android:layout_gravity="center"
+                    android:layout_height="150dp" />
 
                 <TextView
                     android:id="@+id/player_a_name"
@@ -88,28 +71,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
 
-                <FrameLayout
+                <com.iic.mokojin.views.CharacterViewer
+                    android:id="@+id/player_b_character"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/character_image_large_plus_separation"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_height="150dp" />
 
-                    <ImageView
-                        android:id="@+id/player_b_image_back"
-                        android:layout_width="@dimen/large_avatar_size"
-                        android:layout_height="@dimen/large_avatar_size"
-                        android:layout_marginLeft="@dimen/character_separation_amount"
-                        android:layout_marginBottom="@dimen/character_separation_amount"
-                        tools:ignore="RtlHardcoded" />
-
-                    <ImageView
-                        android:id="@+id/player_b_image_front"
-                        android:layout_width="@dimen/large_avatar_size"
-                        android:layout_height="@dimen/large_avatar_size"
-                        android:layout_marginTop="@dimen/character_separation_amount"
-                        android:layout_marginRight="@dimen/character_separation_amount"
-                        tools:ignore="RtlHardcoded" />
-
-                </FrameLayout>
 
                 <TextView
                     android:layout_gravity="center"
