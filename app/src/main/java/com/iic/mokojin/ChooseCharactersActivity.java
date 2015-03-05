@@ -1,5 +1,6 @@
 package com.iic.mokojin;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
+import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -91,10 +93,13 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private void performDone() {
             Pair<Character, Character> characterPair = selectedCharacters();
             Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
+            final Dialog d = new ProgressHudDialog(getActivity(), getActivity().getString(R.string.updating_characters_progress));
+            d.show();
             setCharacterTask.onSuccess(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
                     Player player = task.getResult();
+                    d.dismiss();
                     //TODO: return the updated player.
                     getActivity().finish();
                     return null;
