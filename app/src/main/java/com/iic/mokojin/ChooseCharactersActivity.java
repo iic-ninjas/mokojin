@@ -38,17 +38,22 @@ import butterknife.OnItemClick;
 public class ChooseCharactersActivity extends ActionBarActivity {
 
     public static final String PLAYER_EXTRA = "PLAYER_EXT";
+    private String mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_character);
+        mTitle = getTitle().toString();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new ChooseCharactersFragment())
                     .commit();
         }
-        
+    }
+    
+    public void updateTitle(int count){
+        setTitle(mTitle.concat(" (").concat(String.valueOf(count)).concat(")"));
     }
 
     public static class ChooseCharactersFragment extends Fragment {
@@ -81,7 +86,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             super.onCreateOptionsMenu(menu, inflater);
             inflater.inflate(R.menu.menu_choose_character, menu);
             mDoneMenuItem = menu.findItem(R.id.action_done);
-            refreshDoneMenuItem();
+            refreshMenu();
         }
 
         @Override
@@ -147,6 +152,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                             mCharacterB = characters.indexOf(mPlayer.getCharacterB());
                             if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
                         }
+                        refreshMenu();
                     }
                 }
             });
@@ -173,13 +179,27 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                 mCharacterA = mCharacterB;
                 mCharacterB = position;
             }
-            refreshDoneMenuItem();
+            refreshMenu();
         }
 
-        private void refreshDoneMenuItem(){
+        private void refreshMenu(){
             mDoneMenuItem.setEnabled(validSelectionCount());
+            updateTitle();
         }
-        
+
+        private void updateTitle() {
+            ChooseCharactersActivity charactersActivity = (ChooseCharactersActivity) getActivity();
+            if (null != mCharacterA){
+                if (null != mCharacterB) {
+                    charactersActivity.updateTitle(2);
+                } else {
+                    charactersActivity.updateTitle(1);
+                }
+            } else {
+                charactersActivity.updateTitle(0);
+            }
+        }
+
         private boolean validSelectionCount(){
             return mCharacterA != null;
         }
