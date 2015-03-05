@@ -2,6 +2,7 @@ package com.iic.mokojin.presenters;
 
 import com.iic.mokojin.R;
 import com.iic.mokojin.models.Character;
+import com.iic.mokojin.utils.ModelFactory;
 import com.iic.mokojin.utils.RobolectricGradleTestRunner;
 
 import org.junit.Test;
@@ -9,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by yon on 3/4/15.
@@ -28,14 +27,9 @@ public class CharacterPresenterTest {
 
     @Test
     public void testGetImageResource(){
-        Character testCharacter = createCharacterWithId(10);
+        Character testCharacter = ModelFactory.createCharacterWithId(10);
         int resource = CharacterPresenter.getImageResource(Robolectric.application, testCharacter);
         assertEquals(TEST_CHARACTER_RESOURCE, resource);
     }
 
-    private static Character createCharacterWithId(int characterId){
-        Character mockChar = mock(Character.class);
-        when(mockChar.getCharacterId()).thenReturn(characterId);
-        return mockChar;
-    }
 }
