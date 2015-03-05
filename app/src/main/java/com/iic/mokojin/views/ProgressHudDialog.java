@@ -9,7 +9,7 @@ import android.content.Context;
 public class ProgressHudDialog extends ProgressDialog {
 
     public ProgressHudDialog(Context context, String message) {
-        super(context, STYLE_HORIZONTAL);
+        super(context, STYLE_SPINNER);
         if (message != null) {
             setMessage(message);
         }
