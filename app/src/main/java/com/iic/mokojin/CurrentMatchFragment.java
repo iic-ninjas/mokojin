@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operation.EndMatchOperation;
+import com.iic.mokojin.operations.EndMatchOperation;
 import com.iic.mokojin.views.CharacterViewer;
 
 import bolts.Continuation;
