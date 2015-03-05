@@ -1,7 +1,7 @@
 package com.iic.mokojin.operations;
 
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.utils.ModelFactory;
+import com.iic.mokojin.utils.MockFactory;
 import com.parse.ParseCloud;
 
 import org.junit.Before;
@@ -28,11 +28,11 @@ public class SetCharactersOperationTest  {
 
 
     public static final String PLAYER_ID = "PLAYER_ID";
-    public static final Player PLAYER = ModelFactory.createPlayer(PLAYER_ID);
+    public static final Player PLAYER = MockFactory.createPlayer(PLAYER_ID);
     public static final String CHAR_A_ID = "CHAR_ID_1";
-    public static final com.iic.mokojin.models.Character CHARACTER_A = ModelFactory.createCharacter(CHAR_A_ID);
+    public static final com.iic.mokojin.models.Character CHARACTER_A = MockFactory.createCharacter(CHAR_A_ID);
     public static final String CHAR_B_ID = "CHAR_ID_2";
-    public static final com.iic.mokojin.models.Character CHARACTER_B = ModelFactory.createCharacter(CHAR_B_ID);
+    public static final com.iic.mokojin.models.Character CHARACTER_B = MockFactory.createCharacter(CHAR_B_ID);
     
     private static final Task MOCK_TASK = mock(Task.class);
     
@@ -61,8 +61,5 @@ public class SetCharactersOperationTest  {
         PowerMockito.verifyStatic();
         operation.run(PLAYER, CHARACTER_A, null);
     }
-
-
-
-
+    
 }

@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by yon on 3/5/15.
  */
-public final class ModelFactory {
+public final class MockFactory {
 
     public static Player createPlayer(String objectID){
         return createObject(Player.class, objectID);
