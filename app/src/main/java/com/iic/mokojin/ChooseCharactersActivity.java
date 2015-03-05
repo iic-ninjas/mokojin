@@ -26,6 +26,8 @@ import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.util.List;
+
 import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
@@ -93,13 +95,13 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private void performDone() {
             Pair<Character, Character> characterPair = selectedCharacters();
             Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
-            final Dialog d = new ProgressHudDialog(getActivity(), getActivity().getString(R.string.updating_characters_progress));
-            d.show();
+            final Dialog progressDialog = new ProgressHudDialog(getActivity(), getActivity().getString(R.string.updating_characters_progress));
+            progressDialog.show();
             setCharacterTask.onSuccess(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
                     Player player = task.getResult();
-                    d.dismiss();
+                    progressDialog.dismiss();
                     //TODO: return the updated player.
                     getActivity().finish();
                     return null;
@@ -126,6 +128,25 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             ButterKnife.inject(this, rootView);
 
             mCharacterAdapter = new CharacterAdapter(getActivity());
+            mCharacterAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Character>() {
+                @Override
+                public void onLoading() {
+                }
+
+                @Override
+                public void onLoaded(List<Character> characters, Exception e) {
+                    if (null != mPlayer && mCharacterA == null && mCharacterB == null){
+                        if (null != mPlayer.getCharacterA()) {
+                            mCharacterA = characters.indexOf(mPlayer.getCharacterA());
+                            if (null != mCharacterA) mCharacterListView.setItemChecked(mCharacterA, true);
+                        }
+                        if (null != mPlayer.getCharacterB()) {
+                            mCharacterB = characters.indexOf(mPlayer.getCharacterB());
+                            if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
+                        }
+                    }
+                }
+            });
             mCharacterListView.setAdapter(mCharacterAdapter);
             return rootView;
         }
