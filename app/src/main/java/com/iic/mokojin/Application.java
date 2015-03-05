@@ -1,14 +1,12 @@
 package com.iic.mokojin;
 
-import android.app.Application;
-
 import com.iic.mokojin.models.Models;
 import com.parse.Parse;
 
 /**
  * Created by udi on 3/3/15.
  */
-public class ApplicationController extends Application {
+public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         // Enable Local Datastore.
