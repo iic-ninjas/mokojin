@@ -138,7 +138,10 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                     if (null != mPlayer && mCharacterA == null && mCharacterB == null){
                         if (null != mPlayer.getCharacterA()) {
                             mCharacterA = characters.indexOf(mPlayer.getCharacterA());
-                            if (null != mCharacterA) mCharacterListView.setItemChecked(mCharacterA, true);
+                            if (null != mCharacterA) {
+                                mCharacterListView.setItemChecked(mCharacterA, true);
+                                mCharacterListView.smoothScrollToPosition(mCharacterA);
+                            }
                         }
                         if (null != mPlayer.getCharacterB()) {
                             mCharacterB = characters.indexOf(mPlayer.getCharacterB());
