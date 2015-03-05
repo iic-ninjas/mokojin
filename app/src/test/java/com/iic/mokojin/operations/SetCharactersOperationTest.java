@@ -4,8 +4,6 @@ import com.iic.mokojin.models.Player;
 import com.iic.mokojin.utils.ModelFactory;
 import com.parse.ParseCloud;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
