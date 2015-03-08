@@ -7,27 +7,29 @@
     >
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/character_image"
         android:src="@drawable/player_17"
         android:layout_gravity="center"
         android:layout_marginBottom="6dp"
         app:riv_corner_radius="100dp"
-        app:riv_border_width="8dp"
+        app:riv_border_width="6dp"
         app:riv_border_color="@color/character_list_selector"
 
         />
     <TextView
-        android:layout_width="100dp"
-        android:layout_height="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:singleLine="true"
         android:text="Eddie"
         android:id="@+id/character_name"
         android:textSize="@dimen/abc_text_size_small_material"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/select_color_foreground"
+        android:textColor="@color/white"
         android:background="@drawable/character_list_selector"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
         />
 </LinearLayout>
