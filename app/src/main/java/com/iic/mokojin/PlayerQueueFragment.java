@@ -7,20 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.QueueItem;
+import com.iic.mokojin.operation.LeaveQueueOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemLongClick;
+import de.timroes.android.listview.EnhancedListView;
 
 public class PlayerQueueFragment extends Fragment {
 
-    @InjectView(R.id.queue_list_view) ListView mQueueListView;
+    @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
     QueueAdapter mQueueAdapter;
 
     public PlayerQueueFragment() {
@@ -41,8 +44,32 @@ public class PlayerQueueFragment extends Fragment {
 
         mQueueAdapter = new QueueAdapter(getActivity());
         mQueueListView.setAdapter(mQueueAdapter);
+        mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
+            @Override
+            public EnhancedListView.Undoable onDismiss(final EnhancedListView enhancedListView, int i) {
+                try {
+                    new LeaveQueueOperation().run((QueueItem) enhancedListView.getItemAtPosition(i));
+                    ((QueueAdapter) enhancedListView.getAdapter()).loadObjects();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+        mQueueListView.enableSwipeToDismiss();
 
         return rootView;
+    }
+
+    public void onResume() {
+        super.onResume();
+        mQueueAdapter.loadObjects();
+    }
+
+    @OnItemLongClick(R.id.queue_list_view)
+    boolean onPlayerLongClick(int position) {
+        ChooseCharactersActivity.chooseCharacter(getActivity(), mQueueAdapter.getItem(position).getPlayer());
+        return true;
     }
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{

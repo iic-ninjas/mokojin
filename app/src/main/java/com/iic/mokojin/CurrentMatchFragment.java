@@ -1,6 +1,5 @@
 package com.iic.mokojin;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -102,15 +101,6 @@ public class CurrentMatchFragment extends Fragment {
         }, Task.UI_THREAD_EXECUTOR);
     }
 
-    private void selectCharacter(Player player) {
-        Intent selectCharacterIntent = new Intent(getActivity(), ChooseCharactersActivity.class);
-
-        player.saveToLocalStorage();
-        selectCharacterIntent.putExtra(ChooseCharactersActivity.PLAYER_EXTRA, player.getObjectId());
-        startActivity(selectCharacterIntent);
-
-    }
-
     @SuppressWarnings("unused")
     @OnClick(R.id.player_a_character)
     void onPlayerAClick() {
@@ -127,14 +117,14 @@ public class CurrentMatchFragment extends Fragment {
     @SuppressWarnings("unused")
     @OnLongClick(R.id.player_a_character)
     boolean onPlayerALongClick() {
-        selectCharacter(mCurrentMatch.getPlayerA());
+        ChooseCharactersActivity.chooseCharacter(getActivity(), mCurrentMatch.getPlayerA());
         return true;
     }
 
     @SuppressWarnings("unused")
     @OnLongClick(R.id.player_b_character)
     boolean onPlayerBLongClick() {
-        selectCharacter(mCurrentMatch.getPlayerB());
+        ChooseCharactersActivity.chooseCharacter(getActivity(), mCurrentMatch.getPlayerB());
         return true;
     }
 }
