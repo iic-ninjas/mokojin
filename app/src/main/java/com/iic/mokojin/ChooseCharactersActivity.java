@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operation.SetCharactersOperation;
+import com.iic.mokojin.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;

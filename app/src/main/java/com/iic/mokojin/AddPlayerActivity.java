@@ -2,9 +2,10 @@ package com.iic.mokojin;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,14 +17,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.Person;
+import com.iic.mokojin.models.Player;
+import com.iic.mokojin.operations.CreatePersonOperation;
+import com.iic.mokojin.operations.JoinQueueOperation;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 
 public class AddPlayerActivity extends ActionBarActivity {
+
+    private static final String LOG_TAG = AddPlayerActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,24 +74,52 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             //noinspection SimplifiableIfStatement
             if (id == R.id.action_done) {
-                done();
+                done(null);
                 return true;
             }
 
             return super.onOptionsItemSelected(item);
         }
 
-        private void done() {
-            Person personToJoin = null;
-            if (!TextUtils.isEmpty(mPersonNAmeEditText.getText())) {
-                // Create new person and then join
+        // If there is a person selected in the listview - returns it (as a fulfilled promise)
+        // Otherwise - creates a new person, and returns a promise which is fulfilled once that
+        // person has been created
+        private Task<Person> getPersonToJoin(@Nullable Person selectedPerson) {
+            if (null == selectedPerson) {
+                return new CreatePersonOperation().run(mPersonNAmeEditText.getText().toString());
             } else {
-                personToJoin = mAdapter.getItem(mPeopleListView.getSelectedItemPosition());
+                return Task.forResult(selectedPerson);
             }
+        }
 
-            if (personToJoin != null) {
+        @SuppressWarnings("unused")
+        @OnItemClick(R.id.people_list_view)
+        void onListViewItemClick(int position) {
+            done(mAdapter.getItem(position));
+        }
 
-            }
+        // param is null if nothing has been selected
+        private void done(@Nullable Person selectedPerson) {
+            getPersonToJoin(selectedPerson).continueWithTask(new Continuation<Person, Task<Player>>() {
+                @Override
+                public Task<Player> then(Task<Person> task) throws Exception {
+                    if (task.isFaulted()) {
+                        Log.e(LOG_TAG, "Error creating person", task.getError());
+                        throw task.getError();
+                    }
+                    return new JoinQueueOperation().run(task.getResult());
+                }
+            }).continueWith(new Continuation<Player, Void>() {
+                @Override
+                public Void then(Task<Player> task) throws Exception {
+                    if (task.isFaulted()) {
+                        Log.e(LOG_TAG, "Error joining queue", task.getError());
+                        throw task.getError();
+                    }
+                    getActivity().finish();
+                    return null;
+                }
+            }, Task.UI_THREAD_EXECUTOR);
         }
 
 
