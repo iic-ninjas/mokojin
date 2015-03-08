@@ -1,6 +1,7 @@
 package com.iic.mokojin.utils;
 
 import com.iic.mokojin.models.Character;
+import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.parse.ParseObject;
 
@@ -26,6 +27,10 @@ public final class MockFactory {
         Character mockChar = createCharacter(null);
         when(mockChar.getCharacterId()).thenReturn(characterId);
         return mockChar;
+    }
+
+    public static Person createPerson(String objectId) {
+        return createObject(Person.class, objectId);
     }
 
     private static String randomObjectId(){
