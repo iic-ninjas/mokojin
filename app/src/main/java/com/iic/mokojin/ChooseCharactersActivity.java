@@ -53,7 +53,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
     }
     
     public void updateTitle(int count){
-        setTitle(mTitle.concat(" (").concat(String.valueOf(count)).concat(")"));
+        setTitle(mTitle.concat(String.format(" (%d)", count)));
     }
 
     public static class ChooseCharactersFragment extends Fragment {
