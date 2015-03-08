@@ -1,5 +1,6 @@
 package com.iic.mokojin;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,8 +22,11 @@ import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
+import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+
+import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -34,17 +38,22 @@ import butterknife.OnItemClick;
 public class ChooseCharactersActivity extends ActionBarActivity {
 
     public static final String PLAYER_EXTRA = "PLAYER_EXT";
+    private String mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_character);
+        mTitle = getTitle().toString();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new ChooseCharactersFragment())
                     .commit();
         }
-        
+    }
+    
+    public void updateTitle(int count){
+        setTitle(mTitle.concat(String.format(" (%d)", count)));
     }
 
     public static class ChooseCharactersFragment extends Fragment {
@@ -77,7 +86,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             super.onCreateOptionsMenu(menu, inflater);
             inflater.inflate(R.menu.menu_choose_character, menu);
             mDoneMenuItem = menu.findItem(R.id.action_done);
-            refreshDoneMenuItem();
+            refreshMenu();
         }
 
         @Override
@@ -91,10 +100,13 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private void performDone() {
             Pair<Character, Character> characterPair = selectedCharacters();
             Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
+            final Dialog progressDialog = new ProgressHudDialog(getActivity(), getActivity().getString(R.string.updating_characters_progress));
+            progressDialog.show();
             setCharacterTask.onSuccess(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
                     Player player = task.getResult();
+                    progressDialog.dismiss();
                     //TODO: return the updated player.
                     getActivity().finish();
                     return null;
@@ -121,6 +133,29 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             ButterKnife.inject(this, rootView);
 
             mCharacterAdapter = new CharacterAdapter(getActivity());
+            mCharacterAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Character>() {
+                @Override
+                public void onLoading() {
+                }
+
+                @Override
+                public void onLoaded(List<Character> characters, Exception e) {
+                    if (null != mPlayer && mCharacterA == null && mCharacterB == null){
+                        if (null != mPlayer.getCharacterA()) {
+                            mCharacterA = characters.indexOf(mPlayer.getCharacterA());
+                            if (null != mCharacterA) {
+                                mCharacterListView.setItemChecked(mCharacterA, true);
+                                mCharacterListView.smoothScrollToPosition(mCharacterA);
+                            }
+                        }
+                        if (null != mPlayer.getCharacterB()) {
+                            mCharacterB = characters.indexOf(mPlayer.getCharacterB());
+                            if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
+                        }
+                        refreshMenu();
+                    }
+                }
+            });
             mCharacterListView.setAdapter(mCharacterAdapter);
             return rootView;
         }
@@ -144,13 +179,27 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                 mCharacterA = mCharacterB;
                 mCharacterB = position;
             }
-            refreshDoneMenuItem();
+            refreshMenu();
         }
 
-        private void refreshDoneMenuItem(){
+        private void refreshMenu(){
             mDoneMenuItem.setEnabled(validSelectionCount());
+            updateTitle();
         }
-        
+
+        private void updateTitle() {
+            ChooseCharactersActivity charactersActivity = (ChooseCharactersActivity) getActivity();
+            if (null != mCharacterA){
+                if (null != mCharacterB) {
+                    charactersActivity.updateTitle(2);
+                } else {
+                    charactersActivity.updateTitle(1);
+                }
+            } else {
+                charactersActivity.updateTitle(0);
+            }
+        }
+
         private boolean validSelectionCount(){
             return mCharacterA != null;
         }
