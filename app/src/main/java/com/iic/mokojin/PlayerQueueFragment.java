@@ -48,8 +48,8 @@ public class PlayerQueueFragment extends Fragment {
             @Override
             public EnhancedListView.Undoable onDismiss(final EnhancedListView enhancedListView, int i) {
                 try {
-                    new LeaveQueueOperation().run((QueueItem) enhancedListView.getItemAtPosition(i));
-                    ((QueueAdapter) enhancedListView.getAdapter()).loadObjects();
+                    new LeaveQueueOperation().run((QueueItem) mQueueListView.getItemAtPosition(i));
+                    mQueueAdapter.loadObjects();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
