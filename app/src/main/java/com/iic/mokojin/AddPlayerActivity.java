@@ -56,7 +56,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         }
 
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
-        @InjectView(R.id.person_name_edittext) EditText mPersonNAmeEditText;
+        @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -74,7 +74,7 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             //noinspection SimplifiableIfStatement
             if (id == R.id.action_done) {
-                done(null);
+                selectPerson(null);
                 return true;
             }
 
@@ -86,20 +86,24 @@ public class AddPlayerActivity extends ActionBarActivity {
         // person has been created
         private Task<Person> getPersonToJoin(@Nullable Person selectedPerson) {
             if (null == selectedPerson) {
-                return new CreatePersonOperation().run(mPersonNAmeEditText.getText().toString());
+                return new CreatePersonOperation().run(getTextFieldValue());
             } else {
                 return Task.forResult(selectedPerson);
             }
         }
 
+        private String getTextFieldValue() {
+            return mPersonNameEditText.getText().toString();
+        }
+
         @SuppressWarnings("unused")
         @OnItemClick(R.id.people_list_view)
         void onListViewItemClick(int position) {
-            done(mAdapter.getItem(position));
+            selectPerson(mAdapter.getItem(position));
         }
 
         // param is null if nothing has been selected
-        private void done(@Nullable Person selectedPerson) {
+        private void selectPerson(@Nullable Person selectedPerson) {
             getPersonToJoin(selectedPerson).continueWithTask(new Continuation<Person, Task<Player>>() {
                 @Override
                 public Task<Player> then(Task<Person> task) throws Exception {
@@ -116,10 +120,14 @@ public class AddPlayerActivity extends ActionBarActivity {
                         Log.e(LOG_TAG, "Error joining queue", task.getError());
                         throw task.getError();
                     }
-                    getActivity().finish();
+                    done(task.getResult());
                     return null;
                 }
             }, Task.UI_THREAD_EXECUTOR);
+        }
+
+        private void done(Player player) {
+            getActivity().finish();
         }
 
 
@@ -182,7 +190,6 @@ public class AddPlayerActivity extends ActionBarActivity {
         public void onStart() {
             super.onStart();
             mAdapter = new PersonQueryAdapter(getActivity());
-
             mAdapter.setTextKey("name");
 
             mPeopleListView.setAdapter(mAdapter);
