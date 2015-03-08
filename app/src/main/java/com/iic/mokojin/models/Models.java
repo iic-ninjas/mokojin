@@ -15,6 +15,7 @@ public final class Models {
         ParseObject.registerSubclass(Character.class);
         ParseObject.registerSubclass(Player.class);
         ParseObject.registerSubclass(Person.class);
+        ParseObject.registerSubclass(QueueItem.class);
     }
 
     public static <T extends ParseObject> void saveToLocalStorage(T object) {
