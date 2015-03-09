@@ -36,4 +36,21 @@ public class SetCharactersOperationTest extends AbstractOperationTest {
 
     }
 
+    @Test
+    public void shouldWorkWhenSendingOnlyOneCharacter() {
+        SetCharactersOperation operation = new SetCharactersOperation();
+
+        Object retVal = operation.run(PLAYER, CHARACTER_A, null);
+        assertOperationReturnValue(retVal);
+
+        HashMap<String, Object> expectedParams = new HashMap<>();
+        expectedParams.put("player",  PLAYER_ID);
+        expectedParams.put("characterA", CHAR_A_ID);
+        expectedParams.put("characterB", null);
+
+        assertOperationParams(SetCharactersOperation.SET_CHARACTER_CLOUD_FUNCTION_NAME, expectedParams);
+
+
+    }
+
 }
