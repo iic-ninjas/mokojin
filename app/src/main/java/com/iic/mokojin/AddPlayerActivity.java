@@ -8,12 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +19,7 @@ import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.operations.CreatePersonOperation;
 import com.iic.mokojin.operations.JoinQueueOperation;
+import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -28,7 +27,9 @@ import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
+import butterknife.OnTextChanged;
 
 
 public class AddPlayerActivity extends ActionBarActivity {
@@ -56,35 +57,20 @@ public class AddPlayerActivity extends ActionBarActivity {
     public static class AddPlayerFragment extends Fragment {
 
         private ParseQueryAdapter<Person> mAdapter;
+        private ProgressHudDialog mProgressDialog;
 
         public AddPlayerFragment() {
-            setHasOptionsMenu(true);
-        }
+                    }
 
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
+        @InjectView(R.id.create_person) ImageButton mAddPlayerButton;
+
 
         @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            super.onCreateOptionsMenu(menu, inflater);
-            // Inflate the menu; this adds items to the action bar if it is present.
-            inflater.inflate(R.menu.menu_add_player, menu);
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-
-            //noinspection SimplifiableIfStatement
-            if (id == R.id.action_done) {
-                selectPerson(null);
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            mAddPlayerButton.setEnabled(false);
         }
 
         // If there is a person selected in the listview - returns it (as a fulfilled promise)
@@ -92,6 +78,9 @@ public class AddPlayerActivity extends ActionBarActivity {
         // person has been created
         private Task<Person> getPersonToJoin(@Nullable Person selectedPerson) {
             if (null == selectedPerson) {
+                if (null != mProgressDialog){
+                    mProgressDialog.setMessage(getResources().getString(R.string.create_user_progress));
+                }
                 return new CreatePersonOperation().run(getTextFieldValue());
             } else {
                 return Task.forResult(selectedPerson);
@@ -110,6 +99,8 @@ public class AddPlayerActivity extends ActionBarActivity {
 
         // param is null if nothing has been selected
         private void selectPerson(@Nullable Person selectedPerson) {
+            mProgressDialog = new ProgressHudDialog(getActivity(), getResources().getString(R.string.join_queue_progress));
+            mProgressDialog.show();
             getPersonToJoin(selectedPerson).continueWithTask(new Continuation<Person, Task<Player>>() {
                 @Override
                 public Task<Player> then(Task<Person> task) throws Exception {
@@ -117,11 +108,14 @@ public class AddPlayerActivity extends ActionBarActivity {
                         Log.e(LOG_TAG, "Error creating person", task.getError());
                         throw task.getError();
                     }
+                    if (null != mProgressDialog) mProgressDialog.setMessage(getResources().getString(R.string.join_queue_progress));
                     return new JoinQueueOperation().run(task.getResult());
                 }
-            }).continueWith(new Continuation<Player, Void>() {
+            }, Task.UI_THREAD_EXECUTOR).continueWith(new Continuation<Player, Void>() {
                 @Override
                 public Void then(Task<Player> task) throws Exception {
+                    if (null != mProgressDialog) mProgressDialog.hide();
+                    mProgressDialog = null;
                     if (task.isFaulted()) {
                         Log.e(LOG_TAG, "Error joining queue", task.getError());
                         throw task.getError();
@@ -135,7 +129,17 @@ public class AddPlayerActivity extends ActionBarActivity {
         private void done(Player player) {
             getActivity().finish();
         }
-
+        
+        
+        @OnClick(R.id.create_person)
+        void onClickCreatePerson(){
+            selectPerson(null);
+        }
+        
+        @OnTextChanged(R.id.person_name_edittext)
+        void onPersonNameChanged(CharSequence text){
+            mAddPlayerButton.setEnabled(text.length() > 0);
+        }
 
 
         static class PersonQueryAdapter extends ParseQueryAdapter<Person> {

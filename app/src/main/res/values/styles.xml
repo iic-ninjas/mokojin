@@ -31,11 +31,18 @@
         <item name="fab_plusIconColor">@color/white</item>
         <item name="fab_colorNormal">@color/fab_color</item>
         <item name="fab_colorPressed">@color/fab_color_pressed</item>
+        <item name="fab_colorDisabled">@color/fab_color_disabled</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
 
+    </style>
+    
+    <style name="EditText.Mokojin" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#D79C9C</item>
+        <item name="colorControlActivated">#ffdfa4a4</item>
+        <item name="colorControlHighlight">#fff4b2b2</item>
     </style>
 
 </resources>
