@@ -28,9 +28,9 @@
     </style>
 
     <style name="floatingActionButton">
-        <item name="app:fab_plusIconColor">@color/white</item>
-        <item name="app:fab_colorNormal">@color/fab_color</item>
-        <item name="app:fab_colorPressed">@color/fab_color_pressed</item>
+        <item name="fab_plusIconColor">@color/white</item>
+        <item name="fab_colorNormal">@color/fab_color</item>
+        <item name="fab_colorPressed">@color/fab_color_pressed</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">16dp</item>

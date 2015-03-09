@@ -12,7 +12,7 @@
         android:id="@+id/add_player_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:style="@style/floatingActionButton"
+        style="@style/floatingActionButton"
         />
 
 </RelativeLayout>
