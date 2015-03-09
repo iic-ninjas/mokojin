@@ -12,12 +12,7 @@
         android:id="@+id/add_player_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:style="@style/floatingActionButton"
+        />
 
-        app:fab_plusIconColor="@color/white"
-        app:fab_colorNormal="@color/fab_color"
-        app:fab_colorPressed="@color/fab_color"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"/>
 </RelativeLayout>
