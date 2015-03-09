@@ -6,12 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.operations.LeaveQueueOperation;
-import com.iic.mokojin.presenters.CharacterPresenter;
+import com.iic.mokojin.views.CharacterViewer;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -89,6 +88,7 @@ public class PlayerQueueFragment extends Fragment {
                     query.orderByDescending("createdAt");
                     query.include("player.person");
                     query.include("player.characterA");
+                    query.include("player.characterB");
                     return query;
                 }
             });
@@ -142,14 +142,14 @@ public class PlayerQueueFragment extends Fragment {
 
             final PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) v.getTag();
             viewHolder.textView.setText(queueItem.getPlayer().getPerson().getName());
-            viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(getContext(), queueItem.getPlayer().getCharacterA()));
+            viewHolder.characterViewer.setPlayer(queueItem.getPlayer());
 
             return v;
         }
 
         class PlayerQueueItemViewHolder {
             @InjectView(R.id.player_name) TextView textView;
-            @InjectView(R.id.player_character_image) ImageView imageView;
+            @InjectView(R.id.player_character_image) CharacterViewer characterViewer;
 
             public PlayerQueueItemViewHolder(View view) { ButterKnife.inject(this, view); }
         }
