@@ -9,7 +9,7 @@ import com.iic.mokojin.R;
  */
 public class CharacterPresenter {
     
-    public static final int DEFAULT_IMAGE_RESOURCE = R.drawable.player_0;
+    public static final int DEFAULT_IMAGE_RESOURCE = R.drawable.player_empty;
     
     public static int getImageResource(Context context, com.iic.mokojin.models.Character character){
         if (character == null) return DEFAULT_IMAGE_RESOURCE;
