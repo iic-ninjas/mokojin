@@ -16,6 +16,10 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemLongClick;
@@ -49,6 +53,8 @@ public class PlayerQueueFragment extends Fragment {
             public EnhancedListView.Undoable onDismiss(final EnhancedListView enhancedListView, int i) {
                 try {
                     new LeaveQueueOperation().run((QueueItem) mQueueListView.getItemAtPosition(i));
+                    mQueueAdapter.dismissItem(i);
+                    mQueueAdapter.notifyDataSetChanged();
                     mQueueAdapter.loadObjects();
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -73,6 +79,7 @@ public class PlayerQueueFragment extends Fragment {
     }
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{
+        private List<Integer> mNonDismissedPositions;
 
         public QueueAdapter(Context context) {
             super(context, new QueryFactory<QueueItem>() {
@@ -86,6 +93,39 @@ public class PlayerQueueFragment extends Fragment {
                 }
             });
             setPaginationEnabled(false);
+
+            addOnQueryLoadListener(new OnQueryLoadListener<QueueItem>() {
+                @Override
+                public void onLoading() {
+                    // Must be implemented
+                }
+
+                @Override
+                public void onLoaded(List<QueueItem> queueItems, Exception e) {
+                    // Initialize the array of non-dismissed positions to include all queried items
+
+                    Integer[] positionsArray;
+                    positionsArray = new Integer[queueItems.size()];
+                    for (int i = 0; i < queueItems.size(); i++) {
+                        positionsArray[i] = i;
+                    }
+                    mNonDismissedPositions = new ArrayList(Arrays.asList(positionsArray));
+                }
+            });
+        }
+
+        @Override
+        public int getCount() {
+            return mNonDismissedPositions != null ? mNonDismissedPositions.size() : 0;
+        }
+
+        @Override
+        public QueueItem getItem(int position) {
+            return super.getItem(mNonDismissedPositions.get(position));
+        }
+
+        public void dismissItem(int position) {
+            mNonDismissedPositions.remove(position);
         }
 
         @Override
