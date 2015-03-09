@@ -1,6 +1,8 @@
 package com.iic.mokojin;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -129,6 +131,23 @@ public class AddPlayerActivity extends ActionBarActivity {
                         throw task.getError();
                     }
                     done(task.getResult());
+                    return null;
+                }
+            }, Task.UI_THREAD_EXECUTOR).continueWith(new Continuation<Void, Object>() {
+                @Override
+                public Object then(Task<Void> task) throws Exception {
+                    if (task.isFaulted()){
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Error Joining Queue")
+                                .setMessage(task.getError().getMessage())
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User clicked OK button
+                                    }
+                                })
+                                .show();
+                    }
                     return null;
                 }
             }, Task.UI_THREAD_EXECUTOR);
