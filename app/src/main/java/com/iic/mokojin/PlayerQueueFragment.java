@@ -124,6 +124,10 @@ public class PlayerQueueFragment extends Fragment {
             return super.getItem(mNonDismissedPositions.get(position));
         }
 
+        @Override public long getItemId(int position) {
+            return mNonDismissedPositions.get(position);
+        }
+
         public void dismissItem(int position) {
             mNonDismissedPositions.remove(position);
         }
