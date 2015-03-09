@@ -1,6 +1,7 @@
 package com.iic.mokojin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,11 @@ public class AddPlayerActivity extends ActionBarActivity {
 
     private static final String LOG_TAG = AddPlayerActivity.class.getName();
 
+    public static void launch(Context context){
+        Intent addPlayerIntent = new Intent(context, AddPlayerActivity.class);
+        context.startActivity(addPlayerIntent);
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

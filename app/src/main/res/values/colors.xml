@@ -6,4 +6,8 @@
     <color name="select_color">#FF1744</color>
     <color name="background_color">#3E1C17</color>
     <color name="actionbar_color">#5B180E</color>
+    
+    <color name="fab_color">#BB2B16</color>
+    <color name="fab_color_pressed">#ff972513</color>
+    <color name="fab_color_disabled">#6C3128</color>
 </resources>

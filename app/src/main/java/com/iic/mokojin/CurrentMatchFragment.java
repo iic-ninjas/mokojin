@@ -92,9 +92,11 @@ public class CurrentMatchFragment extends Fragment {
     }
 
     private void endMatch(Player.PlayerType playerType) {
+        Log.i(LOG_TAG, "End Match requested");
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
+                Log.i(LOG_TAG, "Match ended - refreshing");
                 refreshCurrentMatch();
                 return null;
             }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnItemLongClick;
 import de.timroes.android.listview.EnhancedListView;
 
@@ -62,7 +63,7 @@ public class PlayerQueueFragment extends Fragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-
+        
         return rootView;
     }
 
@@ -75,6 +76,11 @@ public class PlayerQueueFragment extends Fragment {
     boolean onPlayerLongClick(int position) {
         ChooseCharactersActivity.chooseCharacter(getActivity(), mQueueAdapter.getItem(position).getPlayer());
         return true;
+    }
+    
+    @OnClick(R.id.add_player_button)
+    void onAddPlayerClick(){
+        AddPlayerActivity.launch(getActivity());
     }
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{
