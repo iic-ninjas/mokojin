@@ -12,7 +12,9 @@
         android:layout_gravity="center"
         android:layout_height="match_parent"
         app:direction="right"
+        app:size="small"
         android:layout_marginRight="20dp"
+        android:minWidth="100dp"
         />
     <TextView
         android:layout_width="wrap_content"

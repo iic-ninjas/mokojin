@@ -81,6 +81,7 @@ public class PlayerQueueFragment extends Fragment {
                     query.orderByDescending("createdAt");
                     query.include("player.person");
                     query.include("player.characterA");
+                    query.include("player.characterB");
                     return query;
                 }
             });

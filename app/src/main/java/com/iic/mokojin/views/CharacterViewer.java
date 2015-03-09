@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.iic.mokojin.R;
@@ -24,10 +25,17 @@ public class CharacterViewer extends FrameLayout {
     @InjectView(R.id.character_image_front) RoundedImageView mFrontImage;
     @InjectView(R.id.character_image_back) RoundedImageView mBackImage;
     private int mDirection;
+    private int mSize;
+    private int mMargin;
+    private float mBorderWidth;
 
     static enum Direction {
         left,
         right
+    }
+    static enum Size {
+        big,
+        small
     }
 
     public CharacterViewer(Context context) {
@@ -44,6 +52,7 @@ public class CharacterViewer extends FrameLayout {
 
         try {
             mDirection = a.getInt(R.styleable.CharacterViewer_direction, Direction.left.ordinal());
+            mSize = a.getInt(R.styleable.CharacterViewer_size, Size.big.ordinal());
         } finally {
             a.recycle();
         }
@@ -59,6 +68,25 @@ public class CharacterViewer extends FrameLayout {
     private void init() {
         inflate(getContext(), R.layout.character_viewer, this);
         if (!isInEditMode()) ButterKnife.inject(this);
+        if (mSize == Size.small.ordinal()){
+            mFrontImage.setBorderColor(getResources().getColor(R.color.background_material_light));
+            
+            ViewGroup.LayoutParams layoutParams = mFrontImage.getLayoutParams();
+            layoutParams.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+            layoutParams.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+            mFrontImage.setLayoutParams(layoutParams);
+
+            ViewGroup.LayoutParams layoutParams2 = mBackImage.getLayoutParams();
+            layoutParams2.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+            layoutParams2.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+            mBackImage.setLayoutParams(layoutParams2);
+            
+            mMargin = getResources().getDimensionPixelSize(R.dimen.smaller_character_separation_amount);
+            mBorderWidth = getResources().getDimension(R.dimen.smaller_character_border_width);
+        } else {
+            mMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
+            mBorderWidth = getResources().getDimension(R.dimen.character_border_width);
+        }
     }
 
     public void setPlayer(Player player) {
@@ -83,12 +111,12 @@ public class CharacterViewer extends FrameLayout {
 
         if (mDirection == Direction.left.ordinal()){
             setMarginLeft(mFrontImage, 0);
-            setMarginLeft(mBackImage, getResources().getDimensionPixelSize(R.dimen.character_separation_amount));
+            setMarginLeft(mBackImage, mMargin);
         } else {
             setMarginLeft(mBackImage, 0);
-            setMarginLeft(mFrontImage, getResources().getDimensionPixelSize(R.dimen.character_separation_amount));
+            setMarginLeft(mFrontImage, mMargin);
         }
-        mFrontImage.setBorderWidth(getResources().getDimension(R.dimen.character_border_width));
+        mFrontImage.setBorderWidth(mBorderWidth);
     }
     
     private void setMarginLeft(View view, int amount){
