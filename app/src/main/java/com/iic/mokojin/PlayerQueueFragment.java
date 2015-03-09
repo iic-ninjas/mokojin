@@ -91,7 +91,7 @@ public class PlayerQueueFragment extends Fragment {
                 @Override
                 public ParseQuery<QueueItem> create() {
                     ParseQuery<QueueItem> query = ParseQuery.getQuery(QueueItem.class);
-                    query.orderByDescending("createdAt");
+                    query.orderByAscending("createdAt");
                     query.include("player.person");
                     query.include("player.characterA");
                     query.include("player.characterB");
