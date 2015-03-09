@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iic.mokojin.models.QueueItem;
-import com.iic.mokojin.operation.LeaveQueueOperation;
+import com.iic.mokojin.operations.LeaveQueueOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
