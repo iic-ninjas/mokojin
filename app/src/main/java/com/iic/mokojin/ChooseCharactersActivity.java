@@ -197,6 +197,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
         private void updateTitle() {
             ChooseCharactersActivity charactersActivity = (ChooseCharactersActivity) getActivity();
+            if (null == charactersActivity) return;
             if (null != mCharacterA){
                 if (null != mCharacterB) {
                     charactersActivity.updateTitle(2);
