@@ -6,17 +6,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class CurrentMatchActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_current_match);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new CurrentMatchFragment())
-                    .commit();
-        }
+        setContentView(R.layout.activity_main);
     }
 
 

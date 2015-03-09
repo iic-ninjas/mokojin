@@ -40,6 +40,14 @@ public class ChooseCharactersActivity extends ActionBarActivity {
     public static final String PLAYER_EXTRA = "PLAYER_EXT";
     private String mTitle;
 
+    public static void chooseCharacter(Context context, Player player) {
+        Intent selectCharacterIntent = new Intent(context, ChooseCharactersActivity.class);
+
+        player.saveToLocalStorage();
+        selectCharacterIntent.putExtra(PLAYER_EXTRA, player.getObjectId());
+        context.startActivity(selectCharacterIntent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
