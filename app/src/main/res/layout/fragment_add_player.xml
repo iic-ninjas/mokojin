@@ -21,12 +21,13 @@
                 android:id="@+id/person_name_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="text|textCapWords|textNoSuggestions|textVisiblePassword"
                 android:textColor="@color/white"
                 android:layout_gravity="center_vertical"
                 android:theme="@style/EditText.Mokojin"
                 android:hint="@string/add_user_hint"
                 android:textColorHint="@android:color/secondary_text_dark"
+                android:imeOptions="actionDone"
             />
         </FrameLayout>
 

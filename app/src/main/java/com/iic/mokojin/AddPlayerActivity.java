@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +25,11 @@ import com.iic.mokojin.operations.JoinQueueOperation;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -56,7 +64,7 @@ public class AddPlayerActivity extends ActionBarActivity {
 
     public static class AddPlayerFragment extends Fragment {
 
-        private ParseQueryAdapter<Person> mAdapter;
+        private PersonQueryAdapter mAdapter;
         private ProgressHudDialog mProgressDialog;
 
         public AddPlayerFragment() {
@@ -139,10 +147,15 @@ public class AddPlayerActivity extends ActionBarActivity {
         @OnTextChanged(R.id.person_name_edittext)
         void onPersonNameChanged(CharSequence text){
             mAddPlayerButton.setEnabled(text.length() > 0);
+            mAdapter.getFilter().filter(text);
         }
 
 
-        static class PersonQueryAdapter extends ParseQueryAdapter<Person> {
+        static class PersonQueryAdapter extends ParseQueryAdapter<Person> implements Filterable {
+
+            private List<Person> mPeople;
+            private List<Person> mFilteredPeople;
+            public boolean mLoading = true;
 
             private static void filterPeopleCurrentlyPlaying(ParseQuery<Person> query) {
 
@@ -170,6 +183,61 @@ public class AddPlayerActivity extends ActionBarActivity {
                         return query;
                     }
                 });
+
+                addOnQueryLoadListener(new OnQueryLoadListener<Person>() {
+
+                    @Override
+                    public void onLoading() {
+                        mLoading = true;
+                    }
+
+                    @Override
+                    public void onLoaded(List<Person> people, Exception e) {
+                        // Initialize the array of non-dismissed positions to include all queried items
+                        mLoading = false;
+                        Collections.sort(people, new Comparator<Person>() {
+                            @Override
+                            public int compare(Person lhs, Person rhs) {
+                                return lhs.getName().compareTo(rhs.getName());
+                            }
+                        });
+                        mPeople = people;
+                        getFilter().filter(null);
+                    }
+                });
+            }
+
+            @Override
+            public Filter getFilter() {
+                Filter filter = new Filter() {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint) {
+                        FilterResults results = new FilterResults();
+                        List<Person> filteredPeople = new ArrayList<>();
+
+                        if (TextUtils.isEmpty(constraint)) {
+                            filteredPeople = mPeople;
+                        } else {
+                            constraint = constraint.toString().toLowerCase();
+                            for (int i = 0; i < mPeople.size(); i++) {
+                                Person person = mPeople.get(i);
+                                if (person.getName().toLowerCase().startsWith(constraint.toString()))  {
+                                    filteredPeople.add(person);
+                                }
+                            }
+                        }
+                        results.count = filteredPeople.size();
+                        results.values = filteredPeople;
+                        return results;
+                    }
+
+                    @Override
+                    protected void publishResults(CharSequence constraint, FilterResults results) {
+                        mFilteredPeople = (List<Person>) results.values;
+                        notifyDataSetChanged();
+                    }
+                };
+                return filter;
             }
 
             static class PersonViewHolder {
@@ -180,6 +248,17 @@ public class AddPlayerActivity extends ActionBarActivity {
                 PersonViewHolder(View v) {
                     ButterKnife.inject(this, v);
                 }
+            }
+
+            @Override
+            public int getCount() {
+                if (mLoading || null == mFilteredPeople) return 0;
+                return mFilteredPeople.size();
+            }
+
+            @Override
+            public Person getItem(int index) {
+                return mFilteredPeople.get(index);
             }
 
             @Override
@@ -194,6 +273,8 @@ public class AddPlayerActivity extends ActionBarActivity {
                 viewHolder.personName.setText(person.getName());
                 return v;
             }
+            
+            
         }
 
         @Override
