@@ -28,6 +28,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".AddPlayerActivity"
+            android:label="@string/title_activity_add_player"
+            android:parentActivityName=".CurrentMatchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iic.mokojin.CurrentMatchActivity" />
+        </activity>
     </application>
 
 </manifest>
