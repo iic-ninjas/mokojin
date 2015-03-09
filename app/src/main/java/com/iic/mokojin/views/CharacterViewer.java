@@ -24,8 +24,8 @@ public class CharacterViewer extends FrameLayout {
     private Player mPlayer;
     @InjectView(R.id.character_image_front) RoundedImageView mFrontImage;
     @InjectView(R.id.character_image_back) RoundedImageView mBackImage;
-    private int mDirection;
-    private int mSize;
+    private Direction mDirection;
+    private Size mSize;
     private int mMargin;
     private float mBorderWidth;
 
@@ -45,16 +45,16 @@ public class CharacterViewer extends FrameLayout {
 
     public CharacterViewer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.getTheme().obtainStyledAttributes(
+        TypedArray attributes = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.CharacterViewer,
                 0, 0);
 
         try {
-            mDirection = a.getInt(R.styleable.CharacterViewer_direction, Direction.left.ordinal());
-            mSize = a.getInt(R.styleable.CharacterViewer_size, Size.big.ordinal());
+            mDirection = Direction.values()[attributes.getInt(R.styleable.CharacterViewer_direction, Direction.left.ordinal())];
+            mSize = Size.values()[attributes.getInt(R.styleable.CharacterViewer_size, Size.big.ordinal())];
         } finally {
-            a.recycle();
+            attributes.recycle();
         }
 
         init();
@@ -68,25 +68,23 @@ public class CharacterViewer extends FrameLayout {
     private void init() {
         inflate(getContext(), R.layout.character_viewer, this);
         if (!isInEditMode()) ButterKnife.inject(this);
-        if (mSize == Size.small.ordinal()){
+        if (mSize == Size.small){
             mFrontImage.setBorderColor(getResources().getColor(R.color.background_material_light));
-            
-            ViewGroup.LayoutParams layoutParams = mFrontImage.getLayoutParams();
-            layoutParams.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
-            layoutParams.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
-            mFrontImage.setLayoutParams(layoutParams);
-
-            ViewGroup.LayoutParams layoutParams2 = mBackImage.getLayoutParams();
-            layoutParams2.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
-            layoutParams2.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
-            mBackImage.setLayoutParams(layoutParams2);
-            
+            shrinkView(mFrontImage);
+            shrinkView(mBackImage);
             mMargin = getResources().getDimensionPixelSize(R.dimen.smaller_character_separation_amount);
             mBorderWidth = getResources().getDimension(R.dimen.smaller_character_border_width);
         } else {
             mMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
             mBorderWidth = getResources().getDimension(R.dimen.character_border_width);
         }
+    }
+
+    private void shrinkView(RoundedImageView imageView) {
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+        layoutParams.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+        imageView.setLayoutParams(layoutParams);
     }
 
     public void setPlayer(Player player) {
@@ -109,7 +107,7 @@ public class CharacterViewer extends FrameLayout {
     private void showBackImage() {
         mBackImage.setVisibility(View.VISIBLE);
 
-        if (mDirection == Direction.left.ordinal()){
+        if (mDirection == Direction.left){
             setMarginLeft(mFrontImage, 0);
             setMarginLeft(mBackImage, mMargin);
         } else {
