@@ -1,15 +1,16 @@
 package com.iic.mokojin.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.iic.mokojin.R;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.presenters.CharacterPresenter;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -20,8 +21,14 @@ import butterknife.InjectView;
 public class CharacterViewer extends FrameLayout {
 
     private Player mPlayer;
-    @InjectView(R.id.character_image_front) ImageView mFrontImage;
-    @InjectView(R.id.character_image_back) ImageView mBackImage;
+    @InjectView(R.id.character_image_front) RoundedImageView mFrontImage;
+    @InjectView(R.id.character_image_back) RoundedImageView mBackImage;
+    private int mDirection;
+
+    static enum Direction {
+        left,
+        right
+    }
 
     public CharacterViewer(Context context) {
         super(context);
@@ -30,6 +37,17 @@ public class CharacterViewer extends FrameLayout {
 
     public CharacterViewer(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.CharacterViewer,
+                0, 0);
+
+        try {
+            mDirection = a.getInt(R.styleable.CharacterViewer_direction, Direction.left.ordinal());
+        } finally {
+            a.recycle();
+        }
+
         init();
     }
 
@@ -53,22 +71,33 @@ public class CharacterViewer extends FrameLayout {
 
         // Get rid of margins and put it in the middle
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mFrontImage.getLayoutParams();
-        layoutParams.rightMargin = 0;
-        layoutParams.topMargin = 0;
+        layoutParams.leftMargin = 0;
         layoutParams.gravity = Gravity.CENTER;
         mFrontImage.setLayoutParams(layoutParams);
+        mFrontImage.setBorderWidth(0.0f);
+
     }
 
     private void showBackImage() {
         mBackImage.setVisibility(View.VISIBLE);
 
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mFrontImage.getLayoutParams();
-        layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
-        layoutParams.topMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
-        layoutParams.gravity = Gravity.NO_GRAVITY;
-        mFrontImage.setLayoutParams(layoutParams);
+        if (mDirection == Direction.left.ordinal()){
+            setMarginLeft(mFrontImage, 0);
+            setMarginLeft(mBackImage, getResources().getDimensionPixelSize(R.dimen.character_separation_amount));
+        } else {
+            setMarginLeft(mBackImage, 0);
+            setMarginLeft(mFrontImage, getResources().getDimensionPixelSize(R.dimen.character_separation_amount));
+        }
+        mFrontImage.setBorderWidth(getResources().getDimension(R.dimen.character_border_width));
     }
-
+    
+    private void setMarginLeft(View view, int amount){
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)view.getLayoutParams();
+        layoutParams.leftMargin = amount;
+        layoutParams.gravity = Gravity.NO_GRAVITY;
+        view.setLayoutParams(layoutParams);
+    }
+    
     private void refreshUI() {
         mFrontImage.setImageResource(CharacterPresenter.getImageResource(getContext(), mPlayer.getCharacterA()));
         mBackImage.setImageResource(CharacterPresenter.getImageResource(getContext(), mPlayer.getCharacterB()));
