@@ -28,7 +28,9 @@ public class Match extends ParseObject {
     public Date getEndTime() {
         return getDate("endTime");
     }
-
+    
+    public double getChanceToWin() { return getDouble("expected"); }
+    
     public Player getPlayerA() {
         return (Player)getParseObject("playerA");
     }
