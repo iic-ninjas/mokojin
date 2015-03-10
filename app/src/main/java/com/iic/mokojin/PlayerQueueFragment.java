@@ -1,8 +1,9 @@
 package com.iic.mokojin;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,10 @@ import com.parse.ParseQueryAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -86,9 +90,10 @@ public class PlayerQueueFragment extends Fragment {
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{
         private List<Integer> mNonDismissedPositions;
+        private Activity mActivity;
 
-        public QueueAdapter(Context context) {
-            super(context, new QueryFactory<QueueItem>() {
+        public QueueAdapter(Activity activity) {
+            super(activity, new QueryFactory<QueueItem>() {
                 @Override
                 public ParseQuery<QueueItem> create() {
                     ParseQuery<QueueItem> query = ParseQuery.getQuery(QueueItem.class);
@@ -99,6 +104,7 @@ public class PlayerQueueFragment extends Fragment {
                     return query;
                 }
             });
+            mActivity = activity;
             setPaginationEnabled(false);
 
             addOnQueryLoadListener(new OnQueryLoadListener<QueueItem>() {
@@ -119,6 +125,25 @@ public class PlayerQueueFragment extends Fragment {
                     mNonDismissedPositions = new ArrayList(Arrays.asList(positionsArray));
                 }
             });
+            
+            scheduleUpdateClock();
+        }
+
+
+        private void scheduleUpdateClock(){
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            QueueAdapter.this.notifyDataSetChanged();
+                            scheduleUpdateClock();
+                        }
+                    });
+                }
+            }, 1000);
         }
 
         @Override
@@ -150,15 +175,32 @@ public class PlayerQueueFragment extends Fragment {
             final PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) v.getTag();
             viewHolder.textView.setText(queueItem.getPlayer().getPerson().getName());
             viewHolder.characterViewer.setPlayer(queueItem.getPlayer());
-
+            viewHolder.setStartDate(queueItem.getCreatedAt());
             return v;
         }
 
         class PlayerQueueItemViewHolder {
             @InjectView(R.id.player_name) TextView textView;
+            @InjectView(R.id.time_in_queue) TextView clockView;
             @InjectView(R.id.player_character_image) CharacterViewer characterViewer;
 
-            public PlayerQueueItemViewHolder(View view) { ButterKnife.inject(this, view); }
+            private Date mStartDate;
+
+            public PlayerQueueItemViewHolder(View view) {
+                ButterKnife.inject(this, view);
+            }
+
+            public void setStartDate(Date mStartDate) {
+                this.mStartDate = mStartDate;
+                updateClock();
+            }
+            
+            private void updateClock(){
+                long millisecondsAgo = new Date().getTime() - mStartDate.getTime();
+                long secondsAgo = millisecondsAgo / 1000;
+                clockView.setText(DateUtils.formatElapsedTime(secondsAgo));
+            }
+
         }
     }
 }
