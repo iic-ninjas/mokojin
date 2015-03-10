@@ -20,8 +20,8 @@ public class EndMatchOperation {
 
     static {
         mPlayerTypeToString = new HashMap<>();
-        mPlayerTypeToString.put(Player.PlayerType.PLAYER_A, "PlayerA");
-        mPlayerTypeToString.put(Player.PlayerType.PLAYER_B, "PlayerB");
+        mPlayerTypeToString.put(Player.PlayerType.PLAYER_A, "playerA");
+        mPlayerTypeToString.put(Player.PlayerType.PLAYER_B, "playerB");
     }
 
     public EndMatchOperation(Match match, Player.PlayerType winner) {

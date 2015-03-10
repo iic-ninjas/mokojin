@@ -12,6 +12,8 @@
     <string name="search">Search</string>
     <string name="updating_characters_progress">Updating Characters</string>
     <string name="empty_queue_text">There is no one in the queue. You should join!</string>
-
-
+    <string name="add_user_hint">Add New User</string>
+    <string name="join_queue_progress">Joining the queue</string>
+    <string name="create_user_progress">Creating new user</string>
+    <string name="ok">OK</string>
 </resources>
