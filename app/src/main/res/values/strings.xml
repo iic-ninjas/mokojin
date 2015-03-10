@@ -11,6 +11,7 @@
     <string name="title_activity_add_player">Add Player</string>
     <string name="search">Search</string>
     <string name="updating_characters_progress">Updating Characters</string>
+    <string name="empty_queue_text">There is no one in the queue. You should join!</string>
 
 
 </resources>
