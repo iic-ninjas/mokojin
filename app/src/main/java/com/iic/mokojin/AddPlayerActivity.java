@@ -174,7 +174,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             private List<Person> mPeople;
             private List<Person> mFilteredPeople;
-            public boolean mLoading = true;
 
             private static void filterPeopleCurrentlyPlaying(ParseQuery<Person> query) {
 
@@ -207,13 +206,11 @@ public class AddPlayerActivity extends ActionBarActivity {
 
                     @Override
                     public void onLoading() {
-                        mLoading = true;
+
                     }
 
                     @Override
                     public void onLoaded(List<Person> people, Exception e) {
-                        // Initialize the array of non-dismissed positions to include all queried items
-                        mLoading = false;
                         Collections.sort(people, new Comparator<Person>() {
                             @Override
                             public int compare(Person lhs, Person rhs) {
@@ -271,7 +268,7 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             @Override
             public int getCount() {
-                if (mLoading || null == mFilteredPeople) return 0;
+                if (null == mFilteredPeople) return 0;
                 return mFilteredPeople.size();
             }
 
