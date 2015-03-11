@@ -63,7 +63,7 @@ public class PlayerQueueFragment extends Fragment {
                         mQueueAdapter.loadObjects();
                         return null;
                     }
-                });
+                }, Task.BACKGROUND_EXECUTOR);
                 return null;
             }
         });
