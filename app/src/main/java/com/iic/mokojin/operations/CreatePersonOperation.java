@@ -1,4 +1,4 @@
-package com.iic.mokojin.cloud.operations;
+package com.iic.mokojin.operations;
 
 import com.iic.mokojin.models.Person;
 import com.parse.ParseCloud;

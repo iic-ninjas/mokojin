@@ -1,4 +1,4 @@
-package com.iic.mokojin.cloud.operations;
+package com.iic.mokojin.operations;
 
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;

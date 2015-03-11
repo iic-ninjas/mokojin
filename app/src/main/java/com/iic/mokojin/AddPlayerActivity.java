@@ -22,8 +22,8 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.cloud.operations.CreatePersonOperation;
-import com.iic.mokojin.cloud.operations.JoinQueueOperation;
+import com.iic.mokojin.operations.CreatePersonOperation;
+import com.iic.mokojin.operations.JoinQueueOperation;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
