@@ -1,6 +1,6 @@
 package com.iic.mokojin;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
@@ -68,8 +68,27 @@ public class PlayerQueueFragment extends Fragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-        
+        scheduleUpdateClock();
+
         return rootView;
+    }
+
+    private void scheduleUpdateClock(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != mQueueAdapter) {
+                            mQueueAdapter.notifyDataSetChanged();
+                            scheduleUpdateClock();
+                        }
+                    }
+                });
+            }
+        }, 1000);
     }
 
     public void onResume() {
@@ -90,10 +109,9 @@ public class PlayerQueueFragment extends Fragment {
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{
         private List<Integer> mNonDismissedPositions;
-        private Activity mActivity;
 
-        public QueueAdapter(Activity activity) {
-            super(activity, new QueryFactory<QueueItem>() {
+        public QueueAdapter(Context context) {
+            super(context, new QueryFactory<QueueItem>() {
                 @Override
                 public ParseQuery<QueueItem> create() {
                     ParseQuery<QueueItem> query = ParseQuery.getQuery(QueueItem.class);
@@ -104,7 +122,6 @@ public class PlayerQueueFragment extends Fragment {
                     return query;
                 }
             });
-            mActivity = activity;
             setPaginationEnabled(false);
 
             addOnQueryLoadListener(new OnQueryLoadListener<QueueItem>() {
@@ -126,25 +143,8 @@ public class PlayerQueueFragment extends Fragment {
                 }
             });
             
-            scheduleUpdateClock();
         }
 
-
-        private void scheduleUpdateClock(){
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            QueueAdapter.this.notifyDataSetChanged();
-                            scheduleUpdateClock();
-                        }
-                    });
-                }
-            }, 1000);
-        }
 
         @Override
         public int getCount() {
