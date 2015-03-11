@@ -10,8 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iic.mokojin.cloud.operations.EndMatchOperation;
-import com.iic.mokojin.data.CurrentSession;
-import com.iic.mokojin.data.DataEventBus;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.views.CharacterViewer;
@@ -45,7 +44,7 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
     @InjectView(R.id.chance_to_win) TextView mChanceText;
 
-    private Bus mEventBus = DataEventBus.getEventBus();
+    private Bus mEventBus;
 
     public CurrentMatchFragment() {
     }
@@ -55,6 +54,7 @@ public class CurrentMatchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
         ButterKnife.inject(this, rootView);
+        mEventBus = ((Application)getActivity().getApplication()).getCurrentSessionStore().getEventBus();
 
         return rootView;
     }
@@ -62,7 +62,6 @@ public class CurrentMatchFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(LOG_TAG, "registering to event bus");
         mEventBus.register(this);
     }
 
@@ -73,9 +72,8 @@ public class CurrentMatchFragment extends Fragment {
     }
 
     @Subscribe
-    public void refreshCurrentMatch(CurrentSession.SessionUpdateEvent event) {
-        Log.v(LOG_TAG, "got session update event");
-        mCurrentMatch = CurrentSession.getInstance().getCurrentMatch();
+    public void refreshCurrentMatch(CurrentSessionStore.SessionUpdateEvent event) {
+        mCurrentMatch = ((Application)getActivity().getApplication()).getCurrentSessionStore().getCurrentMatch();
         refreshUI();
     }
 

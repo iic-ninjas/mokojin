@@ -10,8 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.iic.mokojin.cloud.operations.LeaveQueueOperation;
-import com.iic.mokojin.data.CurrentSession;
-import com.iic.mokojin.data.DataEventBus;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.views.CharacterViewer;
 import com.squareup.otto.Bus;
@@ -35,7 +34,7 @@ public class PlayerQueueFragment extends Fragment {
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
     QueueAdapter mQueueAdapter;
 
-    private Bus mEventBus = DataEventBus.getEventBus();
+    private Bus mEventBus;
 
     private List<QueueItem> mQueueItems = new ArrayList<>();
 
@@ -46,6 +45,7 @@ public class PlayerQueueFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEventBus = ((Application)getActivity().getApplication()).getCurrentSessionStore().getEventBus();
     }
 
     @Override
@@ -75,8 +75,8 @@ public class PlayerQueueFragment extends Fragment {
 
 
     @Subscribe
-    public void refreshQueue(CurrentSession.SessionUpdateEvent event) {
-        mQueueItems = CurrentSession.getInstance().getQueue();
+    public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
+        mQueueItems = ((Application)getActivity().getApplication()).getCurrentSessionStore().getQueue();
         mQueueAdapter.notifyDataSetChanged();
     }
 

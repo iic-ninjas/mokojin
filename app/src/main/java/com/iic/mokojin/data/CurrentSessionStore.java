@@ -1,6 +1,5 @@
 package com.iic.mokojin.data;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.iic.mokojin.cloud.getters.GetSessionData;
@@ -20,31 +19,29 @@ import bolts.Task;
 /**
  * Created by giladgo on 3/10/15.
  */
-public class CurrentSession {
+public class CurrentSessionStore {
 
-    private static final String LOG_TAG = CurrentSession.class.getName();
+    private static final String LOG_TAG = CurrentSessionStore.class.getName();
 
-    private static CurrentSession mCurrentSession;
+    private Bus mEventBus;
 
     private List<QueueItem> mQueue = new ArrayList<>();
     private Match mCurrentMatch = null;
 
-    // TODO: DI
-    private Bus mEventBus = DataEventBus.getEventBus();
+    public Bus getEventBus() {
+        return mEventBus;
+    }
+
 
     public static class SessionUpdateEvent {
     }
 
-    public static CurrentSession getInstance() {
-        if (mCurrentSession == null) {
-            mCurrentSession = new CurrentSession();
-        }
-        return mCurrentSession;
-    }
+    public CurrentSessionStore(Bus eventBus, Bus broadcastEventBus) {
+        mEventBus = eventBus;
 
-    private CurrentSession() {
         mEventBus.register(this);
-        MokojinBroadcastReceiver.getEventBus().register(this);
+        broadcastEventBus.register(this);
+
         refreshData();
     }
 
@@ -53,7 +50,6 @@ public class CurrentSession {
             @Override
             public Void then(Task<Pair<Match, List<QueueItem>>> pairTask) throws Exception {
                 Pair<Match, List<QueueItem>> pair = pairTask.getResult();
-                Log.v(LOG_TAG, "Setting current match");
                 mCurrentMatch = pair.first;
                 mQueue = pair.second;
 
@@ -64,14 +60,12 @@ public class CurrentSession {
     }
 
     @Subscribe
-    public void onSessionUpdate(MokojinBroadcastReceiver.SessionChangeBroadcastEvent event) {
-        Log.v(LOG_TAG, "Got session change broadcast event");
+    public void onSessionUpdate(MokojinBroadcastReceiver.SessionDataChangeBroadcastEvent event) {
         refreshData();
     }
 
     @Produce
     public SessionUpdateEvent produceSessionUpdateEvent() {
-        Log.v(LOG_TAG, "producing event");
         return new SessionUpdateEvent();
     }
 
@@ -80,7 +74,6 @@ public class CurrentSession {
     }
 
     public Match getCurrentMatch() {
-        Log.v(LOG_TAG, "getting current match, is it null? " + Boolean.toString(mCurrentMatch == null));
         return mCurrentMatch;
     }
 
