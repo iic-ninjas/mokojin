@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
             goodNightOperation.run().continueWith(new Continuation<Void, Object>() {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
-                    dialog.hide();
+                    dialog.dismiss();
                     return null;
                 }
             });
