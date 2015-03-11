@@ -1,13 +1,16 @@
 package com.iic.mokojin;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,12 +43,14 @@ public class ChooseCharactersActivity extends ActionBarActivity {
     public static final String PLAYER_EXTRA = "PLAYER_EXT";
     private String mTitle;
 
-    public static void chooseCharacter(Context context, Player player) {
+    public static void chooseCharacter(Activity context, Player player) {
         Intent selectCharacterIntent = new Intent(context, ChooseCharactersActivity.class);
 
         player.saveToLocalStorage();
         selectCharacterIntent.putExtra(PLAYER_EXTRA, player.getObjectId());
-        context.startActivity(selectCharacterIntent);
+        ActivityCompat.startActivity(context,
+                selectCharacterIntent,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(context).toBundle());
     }
 
     @Override
@@ -113,10 +118,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             setCharacterTask.onSuccess(new Continuation<Player, Object>() {
                 @Override
                 public Object then(Task<Player> task) throws Exception {
-                    Player player = task.getResult();
                     progressDialog.dismiss();
-                    //TODO: return the updated player.
-                    getActivity().finish();
+                    ActivityCompat.finishAfterTransition(getActivity());
                     return null;
                 }
             }, Task.UI_THREAD_EXECUTOR);
@@ -235,6 +238,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             if (v == null) {
                 v = View.inflate(getContext(), R.layout.character_list_item, null);
                 v.setTag(new CharacterViewHolder(v));
+                v.setTransitionName("player");
             }
             super.getItemView(character, v, parent);
 

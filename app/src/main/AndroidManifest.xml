@@ -24,7 +24,9 @@
         <activity
             android:name=".ChooseCharactersActivity"
             android:label="@string/title_activity_choose_character"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/CharacterPageTheme"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

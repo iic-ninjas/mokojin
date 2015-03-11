@@ -3,9 +3,9 @@ package com.iic.mokojin;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -46,11 +46,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
     private static final String LOG_TAG = AddPlayerActivity.class.getName();
 
-    public static void launch(Context context){
-        Intent addPlayerIntent = new Intent(context, AddPlayerActivity.class);
-        context.startActivity(addPlayerIntent);
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +149,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         }
 
         private void done(Player player) {
-            getActivity().finish();
+            ActivityCompat.finishAfterTransition(getActivity());
         }
         
         

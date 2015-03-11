@@ -1,6 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBar.Mokojin.Regular</item>
         <!-- Support library compatibility -->
@@ -13,10 +12,11 @@
         <item name="actionBarStyle">@style/ActionBar.Mokojin.NoTitle</item>
     </style>
 
-
     <!-- ActionBar styles -->
     <style name="ActionBar.Mokojin.Regular"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:windowActionBarOverlay">true</item>
+
         <item name="android:background">@color/actionbar_color</item>
         <!-- Support library compatibility -->
         <item name="background">@color/actionbar_color</item>

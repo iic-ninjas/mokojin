@@ -1,8 +1,12 @@
 package com.iic.mokojin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +37,7 @@ import de.timroes.android.listview.EnhancedListView;
 public class PlayerQueueFragment extends Fragment {
 
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
+    @InjectView(R.id.add_player_button) View mAddPlayerButton;
     QueueAdapter mQueueAdapter;
 
     public PlayerQueueFragment() {
@@ -109,7 +114,12 @@ public class PlayerQueueFragment extends Fragment {
     
     @OnClick(R.id.add_player_button)
     void onAddPlayerClick(){
-        AddPlayerActivity.launch(getActivity());
+        Intent addPlayerIntent = new Intent(getActivity(), AddPlayerActivity.class);
+        ActivityCompat.startActivity(getActivity(),
+                addPlayerIntent,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create((View) mQueueListView, "white_part"),
+                        Pair.create(mAddPlayerButton, "fab")).toBundle());
     }
 
     static class QueueAdapter extends ParseQueryAdapter<QueueItem>{
