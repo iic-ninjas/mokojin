@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.iic.mokojin.cloud.operations.EndMatchOperation;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operations.EndMatchOperation;
-import com.iic.mokojin.presenters.MatchPresenter;
 import com.iic.mokojin.views.CharacterViewer;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.iic.mokojin.presenters.MatchPresenter;
 import com.iic.mokojin.views.ProgressHudDialog;
 
 import bolts.Continuation;
@@ -41,6 +44,7 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
     @InjectView(R.id.chance_to_win) TextView mChanceText;
 
+    private Bus mEventBus;
 
     public CurrentMatchFragment() {
     }
@@ -50,33 +54,29 @@ public class CurrentMatchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
         ButterKnife.inject(this, rootView);
+        mEventBus = ((Application)getActivity().getApplication()).getCurrentSessionStore().getEventBus();
 
         return rootView;
     }
 
-    private void refreshCurrentMatch() {
-        mCurrentMatch = null;
-        Match.getCurrent().continueWith(new Continuation<Match, Void>() {
-            @Override
-            public Void then(Task<Match> task) throws Exception {
-                if (task.isCancelled()) {
-                    Log.d(LOG_TAG, "Fetching of current match was cancelled");
-                } else if (task.isFaulted()) {
-                    Log.e(LOG_TAG, "Error fetching current match", task.getError());
-                } else {
-                    mCurrentMatch = task.getResult();
-                    refreshUI();
-                }
-                return null;
-            }
-        }, Task.UI_THREAD_EXECUTOR);
+    @Override
+    public void onStart() {
+        super.onStart();
+        mEventBus.register(this);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        refreshCurrentMatch();
+    public void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
     }
+
+    @Subscribe
+    public void refreshCurrentMatch(CurrentSessionStore.SessionUpdateEvent event) {
+        mCurrentMatch = ((Application)getActivity().getApplication()).getCurrentSessionStore().getCurrentMatch();
+        refreshUI();
+    }
+
 
     private void refreshUI() {
         if (mCurrentMatch != null) {
@@ -107,8 +107,8 @@ public class CurrentMatchFragment extends Fragment {
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
+                Log.i(LOG_TAG, "Match ended");
                 dialog.hide();
-                refreshCurrentMatch();
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);
