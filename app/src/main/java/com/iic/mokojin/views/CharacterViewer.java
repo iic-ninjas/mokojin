@@ -24,8 +24,8 @@ public class CharacterViewer extends FrameLayout {
     private Player mPlayer;
     @InjectView(R.id.character_image_front) RoundedImageView mFrontImage;
     @InjectView(R.id.character_image_back) RoundedImageView mBackImage;
-    private Direction mDirection;
-    private Size mSize;
+    private Direction mDirection = Direction.left;
+    private Size mSize = Size.big;
     private int mMargin;
     private float mBorderWidth;
 
@@ -67,7 +67,8 @@ public class CharacterViewer extends FrameLayout {
 
     private void init() {
         inflate(getContext(), R.layout.character_viewer, this);
-        if (!isInEditMode()) ButterKnife.inject(this);
+
+        ButterKnife.inject(this);
         if (mSize == Size.small){
             mFrontImage.setBorderColor(getResources().getColor(R.color.background_material_light));
             shrinkView(mFrontImage);

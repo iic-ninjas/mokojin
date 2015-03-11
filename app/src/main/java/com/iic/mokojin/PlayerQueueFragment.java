@@ -3,6 +3,7 @@ package com.iic.mokojin;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import com.parse.ParseQueryAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -68,8 +72,27 @@ public class PlayerQueueFragment extends Fragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-        
+        scheduleUpdateClock();
+
         return rootView;
+    }
+
+    private void scheduleUpdateClock(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != mQueueAdapter) {
+                            mQueueAdapter.notifyDataSetChanged();
+                            scheduleUpdateClock();
+                        }
+                    }
+                });
+            }
+        }, 1000);
     }
 
     public void onResume() {
@@ -123,7 +146,9 @@ public class PlayerQueueFragment extends Fragment {
                     mNonDismissedPositions = new ArrayList(Arrays.asList(positionsArray));
                 }
             });
+            
         }
+
 
         @Override
         public int getCount() {
@@ -154,15 +179,32 @@ public class PlayerQueueFragment extends Fragment {
             final PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) v.getTag();
             viewHolder.textView.setText(queueItem.getPlayer().getPerson().getName());
             viewHolder.characterViewer.setPlayer(queueItem.getPlayer());
-
+            viewHolder.setStartDate(queueItem.getCreatedAt());
             return v;
         }
 
         class PlayerQueueItemViewHolder {
             @InjectView(R.id.player_name) TextView textView;
+            @InjectView(R.id.time_in_queue) TextView clockView;
             @InjectView(R.id.player_character_image) CharacterViewer characterViewer;
 
-            public PlayerQueueItemViewHolder(View view) { ButterKnife.inject(this, view); }
+            private Date mStartDate;
+
+            public PlayerQueueItemViewHolder(View view) {
+                ButterKnife.inject(this, view);
+            }
+
+            public void setStartDate(Date mStartDate) {
+                this.mStartDate = mStartDate;
+                updateClock();
+            }
+            
+            private void updateClock(){
+                long millisecondsAgo = new Date().getTime() - mStartDate.getTime();
+                long secondsAgo = millisecondsAgo / 1000;
+                clockView.setText(DateUtils.formatElapsedTime(secondsAgo));
+            }
+
         }
     }
 }

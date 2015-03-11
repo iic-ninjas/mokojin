@@ -44,4 +44,11 @@
         <item name="colorControlHighlight">#fff4b2b2</item>
     </style>
 
+    <style name="ProgressBar.Mokojin" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_chance_bar</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:maxHeight">20dip</item>
+    </style>
+
 </resources>

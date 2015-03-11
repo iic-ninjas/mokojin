@@ -16,4 +16,6 @@
     <string name="join_queue_progress">Joining the queue</string>
     <string name="create_user_progress">Creating new user</string>
     <string name="ok">OK</string>
+    <string name="ending_match_progress">Ending Match</string>
+
 </resources>
