@@ -50,6 +50,7 @@ public class PlayerQueueFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_player_queue, container, false);
         ButterKnife.inject(this, rootView);
 
+        mQueueListView.setEmptyView(rootView.findViewById(R.id.empty_queue_text));
         mQueueAdapter = new QueueAdapter(getActivity());
         mQueueListView.setAdapter(mQueueAdapter);
         mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
