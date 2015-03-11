@@ -13,11 +13,9 @@ import com.iic.mokojin.cloud.operations.LeaveQueueOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.views.CharacterViewer;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -34,7 +32,7 @@ public class PlayerQueueFragment extends Fragment {
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
     QueueAdapter mQueueAdapter;
 
-    private Bus mEventBus;
+    private CurrentSessionStore mCurrentSessionStore;
 
     private List<QueueItem> mQueueItems = new ArrayList<>();
 
@@ -45,7 +43,7 @@ public class PlayerQueueFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEventBus = ((Application)getActivity().getApplication()).getCurrentSessionStore().getEventBus();
+        mCurrentSessionStore = CurrentSessionStore.get(getActivity());
     }
 
     @Override
@@ -76,20 +74,20 @@ public class PlayerQueueFragment extends Fragment {
 
     @Subscribe
     public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
-        mQueueItems = ((Application)getActivity().getApplication()).getCurrentSessionStore().getQueue();
+        mQueueItems = mCurrentSessionStore.getQueue();
         mQueueAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mEventBus.register(this);
+        mCurrentSessionStore.getEventBus().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mEventBus.unregister(this);
+        mCurrentSessionStore.getEventBus().unregister(this);
     }
 
     private void scheduleUpdateClock(){

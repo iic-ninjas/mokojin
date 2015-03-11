@@ -13,11 +13,10 @@ import com.iic.mokojin.cloud.operations.EndMatchOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.views.CharacterViewer;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import com.iic.mokojin.presenters.MatchPresenter;
+import com.iic.mokojin.views.CharacterViewer;
 import com.iic.mokojin.views.ProgressHudDialog;
+import com.squareup.otto.Subscribe;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -44,7 +43,7 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
     @InjectView(R.id.chance_to_win) TextView mChanceText;
 
-    private Bus mEventBus;
+    private CurrentSessionStore mCurrentSessionStore;
 
     public CurrentMatchFragment() {
     }
@@ -54,7 +53,7 @@ public class CurrentMatchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
         ButterKnife.inject(this, rootView);
-        mEventBus = ((Application)getActivity().getApplication()).getCurrentSessionStore().getEventBus();
+        mCurrentSessionStore  = CurrentSessionStore.get(getActivity());
 
         return rootView;
     }
@@ -62,18 +61,18 @@ public class CurrentMatchFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mEventBus.register(this);
+        mCurrentSessionStore.getEventBus().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mEventBus.unregister(this);
+        mCurrentSessionStore.getEventBus().unregister(this);
     }
 
     @Subscribe
     public void refreshCurrentMatch(CurrentSessionStore.SessionUpdateEvent event) {
-        mCurrentMatch = ((Application)getActivity().getApplication()).getCurrentSessionStore().getCurrentMatch();
+        mCurrentMatch = mCurrentSessionStore.getCurrentMatch();
         refreshUI();
     }
 
