@@ -1,7 +1,6 @@
 package com.iic.mokojin.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.iic.mokojin.Application;
 import com.iic.mokojin.cloud.getters.GetPeople;
@@ -70,7 +69,6 @@ public class PeopleListStore {
 
     @Produce
     public PeopleListUpdateEvent producePeopleListUpdateEvent() {
-        Log.v(LOG_TAG, "producing event");
         return new PeopleListUpdateEvent();
     }
 

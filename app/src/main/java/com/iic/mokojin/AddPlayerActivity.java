@@ -281,7 +281,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
         @Subscribe
         public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
-            Log.v(LOG_TAG, "got event");
             mPeople = mPeopleListStore.getPeopleList();
             mAdapter.getFilter().filter(null);
         }
