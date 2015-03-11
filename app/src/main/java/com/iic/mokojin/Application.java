@@ -1,6 +1,7 @@
 package com.iic.mokojin;
 
 import com.iic.mokojin.data.CurrentSessionStore;
+import com.iic.mokojin.data.PeopleListStore;
 import com.iic.mokojin.models.Models;
 import com.parse.Parse;
 import com.squareup.otto.Bus;
@@ -11,6 +12,7 @@ import com.squareup.otto.Bus;
 public class Application extends android.app.Application {
 
     private CurrentSessionStore mCurrentSessionStore;
+    private PeopleListStore mPeopleListStore;
 
     private Bus mBroadcastReceiverEventBus;
 
@@ -25,10 +27,15 @@ public class Application extends android.app.Application {
 
         mBroadcastReceiverEventBus = new Bus("Broadcast Receiver");
         mCurrentSessionStore = new CurrentSessionStore(mBroadcastReceiverEventBus);
+        mPeopleListStore = new PeopleListStore(mBroadcastReceiverEventBus);
     }
 
     public CurrentSessionStore getCurrentSessionStore() {
         return mCurrentSessionStore;
+    }
+
+    public PeopleListStore getPeopleListStore() {
+        return mPeopleListStore;
     }
 
     public Bus getBroadcastReceiverEventBus() {

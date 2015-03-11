@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -20,17 +21,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.iic.mokojin.models.Person;
-import com.iic.mokojin.models.Player;
 import com.iic.mokojin.cloud.operations.CreatePersonOperation;
 import com.iic.mokojin.cloud.operations.JoinQueueOperation;
+import com.iic.mokojin.data.PeopleListStore;
+import com.iic.mokojin.models.Person;
+import com.iic.mokojin.models.Player;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import bolts.Continuation;
@@ -66,11 +66,14 @@ public class AddPlayerActivity extends ActionBarActivity {
 
     public static class AddPlayerFragment extends Fragment {
 
-        private PersonQueryAdapter mAdapter;
+        private PeopleAdapter mAdapter;
         private ProgressHudDialog mProgressDialog;
+        private PeopleListStore mPeopleListStore;
 
         public AddPlayerFragment() {
-                    }
+
+        }
+
 
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
@@ -82,6 +85,9 @@ public class AddPlayerActivity extends ActionBarActivity {
             super.onViewCreated(view, savedInstanceState);
             mAddPlayerButton.setEnabled(false);
         }
+
+
+
 
         // If there is a person selected in the listview - returns it (as a fulfilled promise)
         // Otherwise - creates a new person, and returns a promise which is fulfilled once that
@@ -156,8 +162,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         private void done(Player player) {
             getActivity().finish();
         }
-        
-        
+
         @OnClick(R.id.create_person)
         void onClickCreatePerson(){
             selectPerson(null);
@@ -169,13 +174,13 @@ public class AddPlayerActivity extends ActionBarActivity {
             mAdapter.getFilter().filter(text);
         }
 
+        private List<Person> mPeople;
 
-        static class PersonQueryAdapter extends ParseQueryAdapter<Person> implements Filterable {
+        class PeopleAdapter extends BaseAdapter implements Filterable {
 
-            private List<Person> mPeople;
             private List<Person> mFilteredPeople;
 
-            private static void filterPeopleCurrentlyPlaying(ParseQuery<Person> query) {
+            private void filterPeopleCurrentlyPlaying(ParseQuery<Person> query) {
 
                 // TODO
 
@@ -193,39 +198,15 @@ public class AddPlayerActivity extends ActionBarActivity {
             }
 
 
-            public PersonQueryAdapter(Context context) {
-                super(context, new ParseQueryAdapter.QueryFactory<Person>() {
-                    public ParseQuery<Person> create() {
-                        ParseQuery<Person> query = new ParseQuery<>(Person.class);
-                        filterPeopleCurrentlyPlaying(query);
-                        return query;
-                    }
-                });
-
-                addOnQueryLoadListener(new OnQueryLoadListener<Person>() {
-
-                    @Override
-                    public void onLoading() {
-
-                    }
-
-                    @Override
-                    public void onLoaded(List<Person> people, Exception e) {
-                        Collections.sort(people, new Comparator<Person>() {
-                            @Override
-                            public int compare(Person lhs, Person rhs) {
-                                return lhs.getName().compareTo(rhs.getName());
-                            }
-                        });
-                        mPeople = people;
-                        getFilter().filter(null);
-                    }
-                });
+            private Context mContext;
+            public PeopleAdapter(Context context) {
+                mContext = context;
             }
+
 
             @Override
             public Filter getFilter() {
-                Filter filter = new Filter() {
+                return new Filter() {
                     @Override
                     protected FilterResults performFiltering(CharSequence constraint) {
                         FilterResults results = new FilterResults();
@@ -253,10 +234,9 @@ public class AddPlayerActivity extends ActionBarActivity {
                         notifyDataSetChanged();
                     }
                 };
-                return filter;
             }
 
-            static class PersonViewHolder {
+            class PersonViewHolder {
 
                 @InjectView(R.id.person_name)
                 TextView personName;
@@ -278,28 +258,48 @@ public class AddPlayerActivity extends ActionBarActivity {
             }
 
             @Override
-            public View getItemView(com.iic.mokojin.models.Person person, View v, ViewGroup parent) {
-                if (v == null) {
-                    v = View.inflate(getContext(), R.layout.person_list_item, null);
-                    v.setTag(new PersonViewHolder(v));
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = View.inflate(mContext, R.layout.person_list_item, null);
+                    convertView.setTag(new PersonViewHolder(convertView));
                 }
-                super.getItemView(person, v, parent);
-                PersonViewHolder viewHolder = (PersonViewHolder)v.getTag();
+                PersonViewHolder viewHolder = (PersonViewHolder)convertView.getTag();
+                Person person = getItem(position);
 
                 viewHolder.personName.setText(person.getName());
-                return v;
+                return convertView;
             }
+
             
             
+        }
+
+        @Subscribe
+        public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
+            Log.v(LOG_TAG, "got event");
+            mPeople = mPeopleListStore.getPeopleList();
+            mAdapter.getFilter().filter(null);
         }
 
         @Override
         public void onStart() {
             super.onStart();
-            mAdapter = new PersonQueryAdapter(getActivity());
-            mAdapter.setTextKey("name");
-
+            mAdapter = new PeopleAdapter(getActivity());
             mPeopleListView.setAdapter(mAdapter);
+
+            mPeopleListStore = PeopleListStore.get(getActivity());
+            mPeopleListStore.getEventBus().register(this);
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            mPeopleListStore.getEventBus().unregister(this);
         }
 
         @Override
