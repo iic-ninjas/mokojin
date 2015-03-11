@@ -5,7 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.iic.mokojin.operations.GoodNightOperation;
+import com.iic.mokojin.cloud.operations.GoodNightOperation;
 import com.iic.mokojin.views.ProgressHudDialog;
 
 import bolts.Continuation;
