@@ -130,7 +130,7 @@ public class AddPlayerActivity extends ActionBarActivity {
             }, Task.UI_THREAD_EXECUTOR).continueWith(new Continuation<Player, Void>() {
                 @Override
                 public Void then(Task<Player> task) throws Exception {
-                    if (null != mProgressDialog) mProgressDialog.hide();
+                    if (null != mProgressDialog) mProgressDialog.dismiss();
                     mProgressDialog = null;
                     if (task.isFaulted()) {
                         Log.e(LOG_TAG, "Error joining queue", task.getError());
@@ -197,13 +197,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 //            query.whereDoesNotMatchKeyInQuery("id", "person", playerQuery);
             }
 
-
-            private Context mContext;
-            public PeopleAdapter(Context context) {
-                mContext = context;
-            }
-
-
             @Override
             public Filter getFilter() {
                 return new Filter() {
@@ -265,7 +258,7 @@ public class AddPlayerActivity extends ActionBarActivity {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
-                    convertView = View.inflate(mContext, R.layout.person_list_item, null);
+                    convertView = View.inflate(getActivity(), R.layout.person_list_item, null);
                     convertView.setTag(new PersonViewHolder(convertView));
                 }
                 PersonViewHolder viewHolder = (PersonViewHolder)convertView.getTag();
@@ -288,7 +281,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         @Override
         public void onStart() {
             super.onStart();
-            mAdapter = new PeopleAdapter(getActivity());
+            mAdapter = new PeopleAdapter();
             mPeopleListView.setAdapter(mAdapter);
 
             mPeopleListStore = PeopleListStore.get(getActivity());
