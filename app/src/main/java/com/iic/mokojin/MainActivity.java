@@ -42,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
                     dialog.dismiss();
+                    //TODO: Trigger Gilad's refresh
                     return null;
                 }
             });
