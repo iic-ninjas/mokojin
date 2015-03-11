@@ -20,4 +20,8 @@ public class MatchPresenter {
             return String.format("1 : %s", DECIMAL_FORMAT.format(chanceB/chanceA));
         }
     }
+
+    public static int getProgress(Match match){
+        return (int) Math.round(100 * match.getChanceToWin());
+    }
 }

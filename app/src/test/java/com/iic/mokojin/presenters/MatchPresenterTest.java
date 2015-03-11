@@ -41,15 +41,52 @@ public class MatchPresenterTest {
     }
 
     @Test
-    public void testZero(){
+    public void testRatioZero(){
         Match match = createMatchWithChanceToWin(0);
         assertEquals("1 : ∞", MatchPresenter.getRatioString(match));
     }
 
     @Test
-    public void testOne(){
+    public void testRatioOne(){
         Match match = createMatchWithChanceToWin(1);
         assertEquals("∞ : 1", MatchPresenter.getRatioString(match));
+    }
+
+
+    @Test
+    public void testProgressSimple(){
+        Match match = createMatchWithChanceToWin(0.75);
+        assertEquals(75, MatchPresenter.getProgress(match));
+    }
+
+    @Test
+    public void testProgressReverse(){
+        Match match = createMatchWithChanceToWin(0.25);
+        assertEquals(25, MatchPresenter.getProgress(match));
+    }
+
+    @Test
+    public void testProgressOneDecimal(){
+        Match match = createMatchWithChanceToWin(0.6);
+        assertEquals(60, MatchPresenter.getProgress(match));
+    }
+
+    @Test
+    public void testProgressTwoDecimal(){
+        Match match = createMatchWithChanceToWin(0.5556);
+        assertEquals(56, MatchPresenter.getProgress(match));
+    }
+
+    @Test
+    public void testProgressZero(){
+        Match match = createMatchWithChanceToWin(0);
+        assertEquals(0, MatchPresenter.getProgress(match));
+    }
+
+    @Test
+    public void testProgressOne(){
+        Match match = createMatchWithChanceToWin(1);
+        assertEquals(100, MatchPresenter.getProgress(match));
     }
 
     private Match createMatchWithChanceToWin(double value) {

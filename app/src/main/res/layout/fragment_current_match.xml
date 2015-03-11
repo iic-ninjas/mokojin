@@ -12,13 +12,15 @@
         android:textSize="30sp"
         android:text="@string/no_ongoing_matches"
         android:gravity="center" 
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        >
 
         <LinearLayout
             android:id="@+id/players_container"
@@ -111,11 +113,29 @@
 
         </LinearLayout>
 
+
+        <ProgressBar
+            style="@style/ProgressBar.Mokojin"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:id="@+id/chance_bar"
+            android:layout_gravity="center_horizontal"
+            android:progress="50"
+            android:max="100"
+            />
+
+
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/chance_to_win"
             android:layout_height="wrap_content"
-            />
+            android:layout_marginTop="6dp"
+            android:text="3:1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/abc_text_size_subtitle_material_toolbar"
+            android:textIsSelectable="false" />
 
     </LinearLayout>
 

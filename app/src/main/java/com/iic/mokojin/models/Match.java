@@ -5,6 +5,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.Date;
+import java.util.Random;
 
 import bolts.Task;
 
@@ -13,6 +14,8 @@ import bolts.Task;
  */
 @ParseClassName("Match")
 public class Match extends ParseObject {
+
+    private Double mChance;
 
     public Match() {
     }
@@ -29,7 +32,18 @@ public class Match extends ParseObject {
         return getDate("endTime");
     }
     
-    public double getChanceToWin() { return getDouble("expected"); }
+    public double getChanceToWin() {
+        if (has("expected")){
+            return getDouble("expected");
+        } else { //TODO: placeholder until we get the match from the cloud function
+            return getRandomChance();
+        }
+    }
+
+    public double getRandomChance(){
+        if (mChance == null) mChance = new Random().nextDouble();
+        return mChance;
+    }
     
     public Player getPlayerA() {
         return (Player)getParseObject("playerA");
