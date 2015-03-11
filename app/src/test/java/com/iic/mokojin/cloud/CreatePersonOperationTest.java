@@ -1,4 +1,6 @@
-package com.iic.mokojin.operations;
+package com.iic.mokojin.cloud;
+
+import com.iic.mokojin.cloud.operations.CreatePersonOperation;
 
 import org.junit.Test;
 

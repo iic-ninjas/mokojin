@@ -1,5 +1,6 @@
-package com.iic.mokojin.operations;
+package com.iic.mokojin.cloud;
 
+import com.iic.mokojin.cloud.operations.SetCharactersOperation;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.utils.MockFactory;
 

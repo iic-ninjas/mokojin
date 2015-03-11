@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operations.SetCharactersOperation;
+import com.iic.mokojin.cloud.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.parse.ParseQuery;
@@ -115,9 +115,9 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             Task<Player> setCharacterTask = new SetCharactersOperation().run(mPlayer, characterPair.first, characterPair.second);
             final Dialog progressDialog = new ProgressHudDialog(getActivity(), getActivity().getString(R.string.updating_characters_progress));
             progressDialog.show();
-            setCharacterTask.onSuccess(new Continuation<Player, Object>() {
+            setCharacterTask.onSuccess(new Continuation<Player, Void>() {
                 @Override
-                public Object then(Task<Player> task) throws Exception {
+                public Void then(Task<Player> task) throws Exception {
                     progressDialog.dismiss();
                     ActivityCompat.finishAfterTransition(getActivity());
                     return null;

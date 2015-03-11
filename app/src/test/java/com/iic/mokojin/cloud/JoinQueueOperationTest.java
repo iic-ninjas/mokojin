@@ -1,5 +1,6 @@
-package com.iic.mokojin.operations;
+package com.iic.mokojin.cloud;
 
+import com.iic.mokojin.cloud.operations.JoinQueueOperation;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.utils.MockFactory;

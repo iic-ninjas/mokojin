@@ -1,4 +1,4 @@
-package com.iic.mokojin.operations;
+package com.iic.mokojin.cloud;
 
 import com.parse.ParseCloud;
 
