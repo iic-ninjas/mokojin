@@ -1,5 +1,6 @@
 package com.iic.mokojin;
 
+import com.iic.mokojin.data.CharacterStore;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.data.PeopleListStore;
 import com.iic.mokojin.models.Models;
@@ -13,6 +14,7 @@ public class Application extends android.app.Application {
 
     private CurrentSessionStore mCurrentSessionStore;
     private PeopleListStore mPeopleListStore;
+    private CharacterStore mCharacterStore;
 
     private Bus mBroadcastReceiverEventBus;
 
@@ -28,6 +30,7 @@ public class Application extends android.app.Application {
         mBroadcastReceiverEventBus = new Bus("Broadcast Receiver");
         mCurrentSessionStore = new CurrentSessionStore(mBroadcastReceiverEventBus);
         mPeopleListStore = new PeopleListStore(mBroadcastReceiverEventBus);
+        mCharacterStore = new CharacterStore(mBroadcastReceiverEventBus);
     }
 
     public CurrentSessionStore getCurrentSessionStore() {
@@ -36,6 +39,10 @@ public class Application extends android.app.Application {
 
     public PeopleListStore getPeopleListStore() {
         return mPeopleListStore;
+    }
+
+    public CharacterStore getCharacterStore() {
+        return mCharacterStore;
     }
 
     public Bus getBroadcastReceiverEventBus() {

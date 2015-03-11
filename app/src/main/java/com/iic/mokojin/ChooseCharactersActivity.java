@@ -14,17 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iic.mokojin.cloud.operations.SetCharactersOperation;
+import com.iic.mokojin.data.CharacterStore;
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.cloud.operations.SetCharactersOperation;
 import com.iic.mokojin.presenters.CharacterPresenter;
 import com.iic.mokojin.views.ProgressHudDialog;
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -135,36 +136,46 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
 
         @Override
+        public void onStart() {
+            super.onStart();
+            CharacterStore.get(getActivity()).getEventBus().register(this);
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            CharacterStore.get(getActivity()).getEventBus().unregister(this);
+        }
+
+        @Subscribe
+        public void refreshCharacters(CharacterStore.CharacterListUpdateEvent event) {
+            List<Character> characters = CharacterStore.get(getActivity()).getCharacters();
+
+            if (null != mPlayer && mCharacterA == null && mCharacterB == null){
+                if (null != mPlayer.getCharacterA()) {
+                    mCharacterA = characters.indexOf(mPlayer.getCharacterA());
+                    if (null != mCharacterA) {
+                        mCharacterListView.setItemChecked(mCharacterA, true);
+                        mCharacterListView.smoothScrollToPosition(mCharacterA);
+                    }
+                }
+                if (null != mPlayer.getCharacterB()) {
+                    mCharacterB = characters.indexOf(mPlayer.getCharacterB());
+                    if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
+                }
+            }
+
+            mCharacterAdapter = new CharacterAdapter(getActivity(), characters);
+            mCharacterListView.setAdapter(mCharacterAdapter);
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.choose_character_fragment, container, false);
             ButterKnife.inject(this, rootView);
 
-            mCharacterAdapter = new CharacterAdapter(getActivity());
-            mCharacterAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Character>() {
-                @Override
-                public void onLoading() {
-                }
 
-                @Override
-                public void onLoaded(List<Character> characters, Exception e) {
-                    if (null != mPlayer && mCharacterA == null && mCharacterB == null){
-                        if (null != mPlayer.getCharacterA()) {
-                            mCharacterA = characters.indexOf(mPlayer.getCharacterA());
-                            if (null != mCharacterA) {
-                                mCharacterListView.setItemChecked(mCharacterA, true);
-                                mCharacterListView.smoothScrollToPosition(mCharacterA);
-                            }
-                        }
-                        if (null != mPlayer.getCharacterB()) {
-                            mCharacterB = characters.indexOf(mPlayer.getCharacterB());
-                            if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
-                        }
-                        refreshMenu();
-                    }
-                }
-            });
-            mCharacterListView.setAdapter(mCharacterAdapter);
             return rootView;
         }
 
@@ -214,37 +225,48 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         }
 
     }
-    
-    static class CharacterAdapter extends ParseQueryAdapter<Character>{
 
-        public CharacterAdapter(Context context) {
-            super(context, new QueryFactory<Character>() {
-                @Override
-                public ParseQuery<Character> create() {
-                    ParseQuery<Character> query = ParseQuery.getQuery(Character.class);
-                    query.orderByAscending("name");
-                    return query;
-                }
-            });
-            setPaginationEnabled(false);
+    static class CharacterAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private List<Character> mCharacters;
+
+        public CharacterAdapter(Context context, List<Character> characters) {
+            mCharacters = characters;
+            mContext = context;
         }
 
-        // Customize the layout by overriding getItemView
+
         @Override
-        public View getItemView(Character character, View v, ViewGroup parent) {
-            if (v == null) {
-                v = View.inflate(getContext(), R.layout.character_list_item, null);
-                v.setTag(new CharacterViewHolder(v));
-            }
-            super.getItemView(character, v, parent);
-
-            CharacterViewHolder viewHolder = (CharacterViewHolder) v.getTag();
-            viewHolder.textView.setText(character.getName());
-            viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(getContext(), character));
-
-            return v;
+        public int getCount() {
+            return mCharacters.size();
         }
-        
+
+        @Override
+        public Character getItem(int position) {
+            return mCharacters.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = View.inflate(mContext, R.layout.character_list_item, null);
+                convertView.setTag(new CharacterViewHolder(convertView));
+            }
+
+            Character character = getItem(position);
+            CharacterViewHolder viewHolder = (CharacterViewHolder) convertView.getTag();
+            viewHolder.textView.setText(character.getName());
+            viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(mContext, character));
+
+            return convertView;
+        }
+
         class CharacterViewHolder {
             @InjectView(R.id.character_name) TextView textView;
             @InjectView(R.id.character_image) ImageView imageView;
