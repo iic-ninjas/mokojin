@@ -93,9 +93,6 @@ public class CurrentMatchFragment extends Fragment {
             mChanceText.setVisibility(View.VISIBLE);
             mChanceBar.setProgress(MatchPresenter.getProgress(mCurrentMatch));
             mChanceText.setText(MatchPresenter.getRatioString(mCurrentMatch));
-            Log.i(LOG_TAG, String.format("double %f", mCurrentMatch.getChanceToWin()));
-            Log.i(LOG_TAG, String.format("int %d", MatchPresenter.getProgress(mCurrentMatch)));
-            Log.i(LOG_TAG, String.format("string %s", MatchPresenter.getRatioString(mCurrentMatch)));
         } else {
             mEmptyText.setVisibility(View.VISIBLE);
             mPlayersContainer.setVisibility(View.INVISIBLE);
