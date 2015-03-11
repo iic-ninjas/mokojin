@@ -3,6 +3,7 @@ package com.iic.mokojin.utils;
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
+import com.iic.mokojin.models.QueueItem;
 import com.parse.ParseObject;
 
 import java.util.UUID;
@@ -31,6 +32,10 @@ public final class MockFactory {
 
     public static Person createPerson(String objectId) {
         return createObject(Person.class, objectId);
+    }
+
+    public static QueueItem createQueueItem(String objectID){
+        return createObject(QueueItem.class, objectID);
     }
 
     private static String randomObjectId(){

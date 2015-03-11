@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.operations.LeaveQueueOperation;
 import com.iic.mokojin.views.CharacterViewer;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -52,14 +53,17 @@ public class PlayerQueueFragment extends Fragment {
         mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
             @Override
             public EnhancedListView.Undoable onDismiss(final EnhancedListView enhancedListView, int i) {
-                try {
-                    new LeaveQueueOperation().run((QueueItem) mQueueListView.getItemAtPosition(i));
-                    mQueueAdapter.dismissItem(i);
-                    mQueueAdapter.notifyDataSetChanged();
-                    mQueueAdapter.loadObjects();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                QueueItem itemToRemove = (QueueItem) mQueueListView.getItemAtPosition(i);
+                mQueueAdapter.dismissItem(i);
+                mQueueAdapter.notifyDataSetChanged();
+                Task<Void> leaveQueueTask = new LeaveQueueOperation().run(itemToRemove);
+                leaveQueueTask.onSuccess(new Continuation<Void, Void>() {
+                    @Override
+                    public Void then(Task<Void> task) throws Exception {
+                        mQueueAdapter.loadObjects();
+                        return null;
+                    }
+                });
                 return null;
             }
         });
