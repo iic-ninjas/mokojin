@@ -30,7 +30,7 @@ public class CurrentMatchFragment extends Fragment {
     private Match mCurrentMatch;
 
     @InjectView(R.id.empty_text_view)  View mEmptyText;
-    @InjectView(R.id.players_container) View mPlayersContainer;
+    @InjectView(R.id.active_match) View mActiveMatch;
 
     @InjectView(R.id.player_a_name)  TextView mPlayerANameTextView;
     @InjectView(R.id.player_b_name)  TextView mPlayerBNameTextView;
@@ -81,7 +81,7 @@ public class CurrentMatchFragment extends Fragment {
     private void refreshUI() {
         if (mCurrentMatch != null) {
             mEmptyText.setVisibility(View.INVISIBLE);
-            mPlayersContainer.setVisibility(View.VISIBLE);
+            mActiveMatch.setVisibility(View.VISIBLE);
 
             mPlayerANameTextView.setText(mCurrentMatch.getPlayerA().getPerson().getName());
             mPlayerBNameTextView.setText(mCurrentMatch.getPlayerB().getPerson().getName());
@@ -89,15 +89,11 @@ public class CurrentMatchFragment extends Fragment {
             mPlayerACharacter.setPlayer(mCurrentMatch.getPlayerA());
             mPlayerBCharacter.setPlayer(mCurrentMatch.getPlayerB());
 
-            mChanceBar.setVisibility(View.VISIBLE);
-            mChanceText.setVisibility(View.VISIBLE);
             mChanceBar.setProgress(MatchPresenter.getProgress(mCurrentMatch));
             mChanceText.setText(MatchPresenter.getRatioString(mCurrentMatch));
         } else {
             mEmptyText.setVisibility(View.VISIBLE);
-            mPlayersContainer.setVisibility(View.INVISIBLE);
-            mChanceBar.setVisibility(View.INVISIBLE);
-            mChanceText.setVisibility(View.INVISIBLE);
+            mActiveMatch.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -107,7 +103,7 @@ public class CurrentMatchFragment extends Fragment {
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
-                dialog.hide();
+                dialog.dismiss();
                 refreshCurrentMatch();
                 return null;
             }

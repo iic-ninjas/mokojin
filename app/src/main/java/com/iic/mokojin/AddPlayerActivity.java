@@ -124,7 +124,7 @@ public class AddPlayerActivity extends ActionBarActivity {
             }, Task.UI_THREAD_EXECUTOR).continueWith(new Continuation<Player, Void>() {
                 @Override
                 public Void then(Task<Player> task) throws Exception {
-                    if (null != mProgressDialog) mProgressDialog.hide();
+                    if (null != mProgressDialog) mProgressDialog.dismiss();
                     mProgressDialog = null;
                     if (task.isFaulted()) {
                         Log.e(LOG_TAG, "Error joining queue", task.getError());
