@@ -8,10 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.iic.mokojin.cloud.operations.EndMatchOperation;
+import com.iic.mokojin.data.CurrentSession;
+import com.iic.mokojin.data.DataEventBus;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Player;
-import com.iic.mokojin.operations.EndMatchOperation;
 import com.iic.mokojin.views.CharacterViewer;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -38,6 +42,7 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.player_a_character) CharacterViewer mPlayerACharacter;
     @InjectView(R.id.player_b_character) CharacterViewer mPlayerBCharacter;
 
+    private Bus mEventBus = DataEventBus.getEventBus();
 
     public CurrentMatchFragment() {
     }
@@ -51,29 +56,26 @@ public class CurrentMatchFragment extends Fragment {
         return rootView;
     }
 
-    private void refreshCurrentMatch() {
-        mCurrentMatch = null;
-        Match.getCurrent().continueWith(new Continuation<Match, Void>() {
-            @Override
-            public Void then(Task<Match> task) throws Exception {
-                if (task.isCancelled()) {
-                    Log.d(LOG_TAG, "Fetching of current match was cancelled");
-                } else if (task.isFaulted()) {
-                    Log.e(LOG_TAG, "Error fetching current match", task.getError());
-                } else {
-                    mCurrentMatch = task.getResult();
-                    refreshUI();
-                }
-                return null;
-            }
-        }, Task.UI_THREAD_EXECUTOR);
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG, "registering to event bus");
+        mEventBus.register(this);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        refreshCurrentMatch();
+    public void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
     }
+
+    @Subscribe
+    public void refreshCurrentMatch(CurrentSession.SessionUpdateEvent event) {
+        Log.v(LOG_TAG, "got session update event");
+        mCurrentMatch = CurrentSession.getInstance().getCurrentMatch();
+        refreshUI();
+    }
+
 
     private void refreshUI() {
         if (mCurrentMatch != null) {
@@ -96,8 +98,7 @@ public class CurrentMatchFragment extends Fragment {
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
-                Log.i(LOG_TAG, "Match ended - refreshing");
-                refreshCurrentMatch();
+                Log.i(LOG_TAG, "Match ended");
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);
