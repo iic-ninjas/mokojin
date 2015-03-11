@@ -24,7 +24,7 @@ public class Application extends android.app.Application {
         Parse.initialize(this, "GeJyJhvvsIe540zKyn9rCZwSv7AIEcc11DHQjSAV", "40quo2Icf83unfXkDu2ZJjEcecPsHl03aqiuNsbH");
 
         mBroadcastReceiverEventBus = new Bus("Broadcast Receiver");
-        mCurrentSessionStore = new CurrentSessionStore(new Bus("Current Session Store"), mBroadcastReceiverEventBus);
+        mCurrentSessionStore = new CurrentSessionStore(mBroadcastReceiverEventBus);
     }
 
     public CurrentSessionStore getCurrentSessionStore() {
