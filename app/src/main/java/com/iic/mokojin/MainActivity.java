@@ -5,6 +5,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.iic.mokojin.operations.GoodNightOperation;
+import com.iic.mokojin.views.ProgressHudDialog;
+
+import bolts.Continuation;
+import bolts.Task;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -24,13 +30,21 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_goodnight){
+            final ProgressHudDialog dialog = new ProgressHudDialog(this, getString(R.string.good_night_progress));
+            dialog.show();
+            GoodNightOperation goodNightOperation = new GoodNightOperation();
+            goodNightOperation.run().continueWith(new Continuation<Void, Object>() {
+                @Override
+                public Object then(Task<Void> task) throws Exception {
+                    dialog.hide();
+                    return null;
+                }
+            });
             return true;
         }
 
