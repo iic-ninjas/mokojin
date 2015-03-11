@@ -2,6 +2,7 @@ package com.iic.mokojin;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,15 @@ import com.iic.mokojin.data.CurrentSession;
 import com.iic.mokojin.data.DataEventBus;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.views.CharacterViewer;
-import com.parse.ParseException;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -51,25 +55,24 @@ public class PlayerQueueFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_player_queue, container, false);
         ButterKnife.inject(this, rootView);
 
+        mQueueListView.setEmptyView(rootView.findViewById(R.id.empty_queue_text));
         mQueueAdapter = new QueueAdapter();
         mQueueListView.setAdapter(mQueueAdapter);
         mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
             @Override
             public EnhancedListView.Undoable onDismiss(final EnhancedListView enhancedListView, int i) {
-                try {
-                    new LeaveQueueOperation().run((QueueItem) mQueueListView.getItemAtPosition(i));
-                    mQueueItems.remove(i);
-                    mQueueAdapter.notifyDataSetChanged();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                new LeaveQueueOperation().run((QueueItem) mQueueListView.getItemAtPosition(i));
+                mQueueItems.remove(i);
+                mQueueAdapter.notifyDataSetChanged();
                 return null;
             }
         });
         mQueueListView.enableSwipeToDismiss();
+        scheduleUpdateClock();
 
         return rootView;
     }
+
 
     @Subscribe
     public void refreshQueue(CurrentSession.SessionUpdateEvent event) {
@@ -89,6 +92,23 @@ public class PlayerQueueFragment extends Fragment {
         mEventBus.unregister(this);
     }
 
+    private void scheduleUpdateClock(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != mQueueAdapter) {
+                            mQueueAdapter.notifyDataSetChanged();
+                            scheduleUpdateClock();
+                        }
+                    }
+                });
+            }
+        }, 1000);
+    }
 
     @OnItemLongClick(R.id.queue_list_view)
     boolean onPlayerLongClick(int position) {
@@ -104,10 +124,24 @@ public class PlayerQueueFragment extends Fragment {
     class QueueAdapter extends BaseAdapter {
 
         class PlayerQueueItemViewHolder {
+            private Date mStartDate;
+
             @InjectView(R.id.player_name) TextView textView;
+            @InjectView(R.id.time_in_queue) TextView clockView;
             @InjectView(R.id.player_character_image) CharacterViewer characterViewer;
 
             public PlayerQueueItemViewHolder(View view) { ButterKnife.inject(this, view); }
+
+            public void setStartDate(Date mStartDate) {
+                this.mStartDate = mStartDate;
+                updateClock();
+            }
+
+            private void updateClock(){
+                long millisecondsAgo = new Date().getTime() - mStartDate.getTime();
+                long secondsAgo = millisecondsAgo / 1000;
+                clockView.setText(DateUtils.formatElapsedTime(secondsAgo));
+            }
         }
 
 
@@ -138,7 +172,7 @@ public class PlayerQueueFragment extends Fragment {
             final PlayerQueueItemViewHolder viewHolder = (PlayerQueueItemViewHolder) convertView.getTag();
             viewHolder.textView.setText(queueItem.getPlayer().getPerson().getName());
             viewHolder.characterViewer.setPlayer(queueItem.getPlayer());
-
+            viewHolder.setStartDate(queueItem.getCreatedAt());
             return convertView;
         }
     }

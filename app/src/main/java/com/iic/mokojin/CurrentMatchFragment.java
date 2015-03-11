@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iic.mokojin.cloud.operations.EndMatchOperation;
@@ -16,6 +17,8 @@ import com.iic.mokojin.models.Player;
 import com.iic.mokojin.views.CharacterViewer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.iic.mokojin.presenters.MatchPresenter;
+import com.iic.mokojin.views.ProgressHudDialog;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -24,9 +27,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class CurrentMatchFragment extends Fragment {
 
     private static final String LOG_TAG = CurrentMatchFragment.class.getName();
@@ -41,6 +41,9 @@ public class CurrentMatchFragment extends Fragment {
 
     @InjectView(R.id.player_a_character) CharacterViewer mPlayerACharacter;
     @InjectView(R.id.player_b_character) CharacterViewer mPlayerBCharacter;
+
+    @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
+    @InjectView(R.id.chance_to_win) TextView mChanceText;
 
     private Bus mEventBus = DataEventBus.getEventBus();
 
@@ -87,18 +90,27 @@ public class CurrentMatchFragment extends Fragment {
 
             mPlayerACharacter.setPlayer(mCurrentMatch.getPlayerA());
             mPlayerBCharacter.setPlayer(mCurrentMatch.getPlayerB());
+
+            mChanceBar.setVisibility(View.VISIBLE);
+            mChanceText.setVisibility(View.VISIBLE);
+            mChanceBar.setProgress(MatchPresenter.getProgress(mCurrentMatch));
+            mChanceText.setText(MatchPresenter.getRatioString(mCurrentMatch));
         } else {
             mEmptyText.setVisibility(View.VISIBLE);
             mPlayersContainer.setVisibility(View.INVISIBLE);
+            mChanceBar.setVisibility(View.INVISIBLE);
+            mChanceText.setVisibility(View.INVISIBLE);
         }
     }
 
     private void endMatch(Player.PlayerType playerType) {
-        Log.i(LOG_TAG, "End Match requested");
+        final ProgressHudDialog dialog = new ProgressHudDialog(getActivity(), getResources().getString(R.string.ending_match_progress));
+        dialog.show();
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
                 Log.i(LOG_TAG, "Match ended");
+                dialog.hide();
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);

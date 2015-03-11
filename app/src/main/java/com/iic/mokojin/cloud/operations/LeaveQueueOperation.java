@@ -2,9 +2,10 @@ package com.iic.mokojin.cloud.operations;
 
 import com.iic.mokojin.models.QueueItem;
 import com.parse.ParseCloud;
-import com.parse.ParseException;
 
 import java.util.HashMap;
+
+import bolts.Task;
 
 /**
  * Created by udi on 3/5/15.
@@ -12,10 +13,9 @@ import java.util.HashMap;
 public class LeaveQueueOperation {
     public static final String LEAVE_QUEUE_CLOUD_FUNCTION_NAME = "leaveQueue";
 
-    public void run(QueueItem queueItem) throws ParseException {
+    public Task<Void> run(QueueItem queueItem){
         HashMap<String, Object> params = buildParams(queueItem);
-        ParseCloud.callFunction(LEAVE_QUEUE_CLOUD_FUNCTION_NAME, params);
-        return;
+        return ParseCloud.callFunctionInBackground(LEAVE_QUEUE_CLOUD_FUNCTION_NAME, params);
     }
 
     private HashMap<String, Object> buildParams(QueueItem queueItem){
