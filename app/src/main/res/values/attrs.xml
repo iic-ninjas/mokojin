@@ -8,6 +8,7 @@
         <attr name="size" format="enum">
             <enum name="big" value="0"/>
             <enum name="small" value="1"/>
+            <enum name="huge" value="2"/>
         </attr>
     </declare-styleable>
 </resources>

@@ -6,11 +6,11 @@
         android:id="@+id/current_match"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        />
+        tools:layout="@layout/fragment_current_match" />
     <fragment android:name="com.iic.mokojin.activities.PlayerQueueFragment"
         android:id="@+id/player_queue"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        />
+        tools:layout="@layout/fragment_player_queue" />
 </LinearLayout>

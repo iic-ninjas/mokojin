@@ -12,6 +12,9 @@
         <item name="actionBarStyle">@style/ActionBar.Mokojin.NoTitle</item>
     </style>
 
+    <style name="CharacterPageTheme" parent="AppTheme">
+    </style>
+
     <!-- ActionBar styles -->
     <style name="ActionBar.Mokojin.Regular"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/character_list_view"
     android:choiceMode="multipleChoice"
-    android:numColumns="3"
+    android:numColumns="@integer/characterColumns"
     android:background="@color/background"
     tools:listitem="@layout/character_list_item"
     android:paddingLeft="@dimen/activity_horizontal_margin"

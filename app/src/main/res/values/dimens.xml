@@ -4,9 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_horizontal_margin_half">8dp</dimen>
 
-    <dimen name="large_avatar_size">120dp</dimen>
-    <!-- Must be character_separation_amount + large_avatar_size -->
-    <dimen name="character_image_large_plus_separation">150dp</dimen>
+
+    <dimen name="large_avatar_size">140dp</dimen>
 
     <dimen name="medium_avatar_size">88dp</dimen>
     <dimen name="character_separation_amount">50dp</dimen>
