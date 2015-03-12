@@ -121,7 +121,7 @@ public class CharacterViewer extends FrameLayout {
     private void setMarginLeft(View view, int amount){
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)view.getLayoutParams();
         layoutParams.leftMargin = amount;
-        layoutParams.gravity = Gravity.NO_GRAVITY;
+        layoutParams.gravity = Gravity.CENTER_VERTICAL;
         view.setLayoutParams(layoutParams);
     }
     

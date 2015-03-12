@@ -38,6 +38,9 @@
         android:choiceMode="singleChoice"
         android:transitionName="white_part"
         android:background="@color/background"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        tools:listitem="@layout/person_list_item"
         />
 </LinearLayout>
     <com.getbase.floatingactionbutton.AddFloatingActionButton
