@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.iic.mokojin.Application;
+import com.parse.ParsePushBroadcastReceiver;
 import com.squareup.otto.Bus;
 
 import org.json.JSONException;
@@ -15,7 +16,7 @@ import javax.inject.Inject;
 /**
  * Created by giladgo on 3/11/15.
  */
-public class MokojinBroadcastReceiver extends android.content.BroadcastReceiver {
+public class MokojinBroadcastReceiver extends ParsePushBroadcastReceiver {
 
     private static final String LOG_TAG = MokojinBroadcastReceiver.class.getName();
     public static final String SESSION_DATA_CHANGED = "sessionDataChanged";
@@ -30,7 +31,7 @@ public class MokojinBroadcastReceiver extends android.content.BroadcastReceiver 
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    protected void onPushReceive(Context context, Intent intent) {
         ((Application) context.getApplicationContext()).inject(this);
 
         Log.d(LOG_TAG, "received broadcast!");
