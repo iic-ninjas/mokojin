@@ -7,6 +7,7 @@ import com.iic.mokojin.activities.PlayerQueueFragment;
 import com.iic.mokojin.data.CharacterStore;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.data.PeopleListStore;
+import com.iic.mokojin.recievers.MokojinBroadcastReceiver;
 import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;
@@ -23,6 +24,7 @@ import dagger.Provides;
             PlayerQueueFragment.class,
             AddPlayerActivity.AddPlayerFragment.class,
             ChooseCharactersActivity.ChooseCharactersFragment.class,
+            MokojinBroadcastReceiver.class
     }
 )
 public class DataModule {
