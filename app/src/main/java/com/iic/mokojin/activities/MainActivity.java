@@ -39,21 +39,25 @@ public class MainActivity extends AbstractMokojinActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_goodnight){
-            final ProgressHudDialog dialog = new ProgressHudDialog(this, getString(R.string.good_night_progress));
-            dialog.show();
-            GoodNightOperation goodNightOperation = new GoodNightOperation();
-            goodNightOperation.run().continueWith(new Continuation<Void, Object>() {
-                @Override
-                public Object then(Task<Void> task) throws Exception {
-                    dialog.dismiss();
-                    mCurrentSessionStore.refreshData();
-                    return null;
-                }
-            });
+            performGoodNight();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void performGoodNight() {
+        final ProgressHudDialog dialog = new ProgressHudDialog(this, getString(R.string.good_night_progress));
+        dialog.show();
+        GoodNightOperation goodNightOperation = new GoodNightOperation();
+        goodNightOperation.run().continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                dialog.dismiss();
+                mCurrentSessionStore.refreshData();
+                return null;
+            }
+        });
     }
 
 }
