@@ -104,7 +104,8 @@ public class CurrentMatchFragment extends AbstractMokojinFragment {
             @Override
             public Void then(Task<Match> task) throws Exception {
                 Log.i(LOG_TAG, "Match ended");
-                dialog.hide();
+                dialog.dismiss();
+                mCurrentSessionStore.refreshData();
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);

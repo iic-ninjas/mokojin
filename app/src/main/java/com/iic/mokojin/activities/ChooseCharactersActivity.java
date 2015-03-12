@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.SetCharactersOperation;
 import com.iic.mokojin.data.CharacterStore;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.presenters.CharacterPresenter;
@@ -77,6 +78,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private Integer mCharacterA;
         private Integer mCharacterB;
         @Inject CharacterStore mCharacterStore;
+        @Inject CurrentSessionStore mCurrentSessionStore;
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
@@ -118,6 +120,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
                 @Override
                 public Void then(Task<Player> task) throws Exception {
                     progressDialog.dismiss();
+                    mCurrentSessionStore.refreshData();
                     getActivity().finish();
                     return null;
                 }

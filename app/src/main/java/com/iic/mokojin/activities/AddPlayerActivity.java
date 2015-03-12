@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.CreatePersonOperation;
 import com.iic.mokojin.cloud.operations.JoinQueueOperation;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.data.PeopleListStore;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
@@ -68,6 +69,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         private PeopleAdapter mAdapter;
         private ProgressHudDialog mProgressDialog;
         @Inject PeopleListStore mPeopleListStore;
+        @Inject CurrentSessionStore mCurrentSessionStore;
 
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
@@ -110,7 +112,13 @@ public class AddPlayerActivity extends ActionBarActivity {
                 if (null != mProgressDialog){
                     mProgressDialog.setMessage(getResources().getString(R.string.create_user_progress));
                 }
-                return new CreatePersonOperation().run(getTextFieldValue());
+                return new CreatePersonOperation().run(getTextFieldValue()).continueWith(new Continuation<Person, Person>() {
+                    @Override
+                    public Person then(Task<Person> task) throws Exception {
+                        mPeopleListStore.refreshData();
+                        return task.getResult();
+                    }
+                });
             } else {
                 return Task.forResult(selectedPerson);
             }
@@ -172,6 +180,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         }
 
         private void done(Player player) {
+            mCurrentSessionStore.refreshData();
             getActivity().finish();
         }
 
