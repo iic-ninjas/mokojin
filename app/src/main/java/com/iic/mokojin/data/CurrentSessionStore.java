@@ -78,8 +78,10 @@ public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.
           })
         );
 
-        currentlyPlaying.add(mCurrentMatch.getPlayerA().getPerson());
-        currentlyPlaying.add(mCurrentMatch.getPlayerB().getPerson());
+        if (mCurrentMatch != null) {
+            currentlyPlaying.add(mCurrentMatch.getPlayerA().getPerson());
+            currentlyPlaying.add(mCurrentMatch.getPlayerB().getPerson());
+        }
 
         return currentlyPlaying;
     }
