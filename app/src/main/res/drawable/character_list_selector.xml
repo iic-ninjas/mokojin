@@ -3,9 +3,9 @@
 
     <!-- State when a row is being pressed, but hasn't yet been activated (finger down) -->
     <item android:state_pressed="true"  
-        android:drawable="@color/select_color" />
+        android:drawable="@color/primary_pressed" />
     <item android:state_activated="true" 
-        android:drawable="@color/select_color" />
+        android:drawable="@color/primary" />
 
     <!-- Default, "just hangin' out" state. -->
     <item android:drawable="@android:color/transparent" />

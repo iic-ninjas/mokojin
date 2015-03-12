@@ -4,13 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.iic.mokojin.PlayerQueueFragment"
-    android:background="@android:color/background_light" >
+    android:background="@color/background" >
 
     <de.timroes.android.listview.EnhancedListView
         android:id="@+id/queue_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:transitionName="white_part"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        tools:listitem="@layout/player_queue_item"
         />
     <TextView
         android:id="@+id/empty_queue_text"

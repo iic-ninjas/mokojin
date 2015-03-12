@@ -15,11 +15,9 @@
     <!-- ActionBar styles -->
     <style name="ActionBar.Mokojin.Regular"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:windowActionBarOverlay">true</item>
 
-        <item name="android:background">@color/actionbar_color</item>
-        <!-- Support library compatibility -->
-        <item name="background">@color/actionbar_color</item>
+        <item name="android:background">@color/primary</item>
+        <item name="background">@color/primary</item>
     </style>
 
     <style name="ActionBar.Mokojin.NoTitle" parent="ActionBar.Mokojin.Regular">
@@ -29,9 +27,9 @@
 
     <style name="floatingActionButton">
         <item name="fab_plusIconColor">@color/white</item>
-        <item name="fab_colorNormal">@color/fab_color</item>
-        <item name="fab_colorPressed">@color/fab_color_pressed</item>
-        <item name="fab_colorDisabled">@color/fab_color_disabled</item>
+        <item name="fab_colorNormal">@color/primary</item>
+        <item name="fab_colorPressed">@color/primary_pressed</item>
+        <item name="fab_colorDisabled">@color/primary_disabled</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">16dp</item>
@@ -39,9 +37,9 @@
     </style>
     
     <style name="EditText.Mokojin" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorControlNormal">#D79C9C</item>
-        <item name="colorControlActivated">#ffdfa4a4</item>
-        <item name="colorControlHighlight">#fff4b2b2</item>
+        <!--<item name="colorControlNormal">#D79C9C</item>-->
+        <!--<item name="colorControlActivated">#ffdfa4a4</item>-->
+        <!--<item name="colorControlHighlight">#fff4b2b2</item>-->
     </style>
 
     <style name="ProgressBar.Mokojin" parent="android:Widget.ProgressBar.Horizontal">

@@ -27,7 +27,7 @@
         android:textSize="@dimen/abc_text_size_small_material"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/reverse_character_list_selector"
         android:background="@drawable/character_list_selector"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"

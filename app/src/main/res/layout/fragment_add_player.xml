@@ -13,7 +13,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/gradient_background"
+            android:background="@color/background_dark"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             >
@@ -37,7 +37,7 @@
         android:id="@+id/people_list_view"
         android:choiceMode="singleChoice"
         android:transitionName="white_part"
-        android:background="@android:color/background_light"
+        android:background="@color/background"
         />
 </LinearLayout>
     <com.getbase.floatingactionbutton.AddFloatingActionButton

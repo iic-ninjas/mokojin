@@ -70,7 +70,7 @@ public class CharacterViewer extends FrameLayout {
 
         ButterKnife.inject(this);
         if (mSize == Size.small){
-            mFrontImage.setBorderColor(getResources().getColor(R.color.background_material_light));
+            mFrontImage.setBorderColor(getResources().getColor(R.color.background));
             shrinkView(mFrontImage);
             shrinkView(mBackImage);
             mMargin = getResources().getDimensionPixelSize(R.dimen.smaller_character_separation_amount);
