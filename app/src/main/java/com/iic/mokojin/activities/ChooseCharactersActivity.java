@@ -1,4 +1,4 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.models.Character;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.cloud.operations.SetCharactersOperation;

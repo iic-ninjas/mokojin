@@ -1,7 +1,6 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.EndMatchOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Match;
@@ -18,6 +18,8 @@ import com.iic.mokojin.views.CharacterViewer;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
@@ -25,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class CurrentMatchFragment extends Fragment {
+public class CurrentMatchFragment extends AbstractMokojinFragment {
 
     private static final String LOG_TAG = CurrentMatchFragment.class.getName();
 
@@ -43,18 +45,13 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
     @InjectView(R.id.chance_to_win) TextView mChanceText;
 
-    private CurrentSessionStore mCurrentSessionStore;
-
-    public CurrentMatchFragment() {
-    }
+    @Inject CurrentSessionStore mCurrentSessionStore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
         ButterKnife.inject(this, rootView);
-        mCurrentSessionStore  = CurrentSessionStore.get(getActivity());
-
         return rootView;
     }
 

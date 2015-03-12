@@ -1,4 +1,4 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.cloud.operations.CreatePersonOperation;

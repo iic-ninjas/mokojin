@@ -1,9 +1,7 @@
 package com.iic.mokojin.data;
 
-import android.content.Context;
 import android.util.Pair;
 
-import com.iic.mokojin.Application;
 import com.iic.mokojin.cloud.getters.GetSessionData;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.QueueItem;
@@ -34,13 +32,7 @@ public class CurrentSessionStore {
         return mEventBus;
     }
 
-    public static CurrentSessionStore get(Context context) {
-        return ((Application)context.getApplicationContext()).getCurrentSessionStore();
-    }
-
-
-    public static class SessionUpdateEvent {
-    }
+    public static class SessionUpdateEvent {}
 
     public CurrentSessionStore(Bus broadcastEventBus) {
         mEventBus = new Bus("Current Session Store");
