@@ -15,11 +15,9 @@
     <!-- ActionBar styles -->
     <style name="ActionBar.Mokojin.Regular"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:windowActionBarOverlay">true</item>
 
-        <item name="android:background">@color/actionbar_color</item>
-        <!-- Support library compatibility -->
-        <item name="background">@color/actionbar_color</item>
+        <item name="android:background">@color/primary</item>
+        <item name="background">@color/primary</item>
     </style>
 
     <style name="ActionBar.Mokojin.NoTitle" parent="ActionBar.Mokojin.Regular">
@@ -29,9 +27,9 @@
 
     <style name="floatingActionButton">
         <item name="fab_plusIconColor">@color/white</item>
-        <item name="fab_colorNormal">@color/fab_color</item>
-        <item name="fab_colorPressed">@color/fab_color_pressed</item>
-        <item name="fab_colorDisabled">@color/fab_color_disabled</item>
+        <item name="fab_colorNormal">@color/primary</item>
+        <item name="fab_colorPressed">@color/primary_pressed</item>
+        <item name="fab_colorDisabled">@color/primary_disabled</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">16dp</item>
@@ -49,6 +47,11 @@
         <item name="android:progressDrawable">@drawable/progress_chance_bar</item>
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
+    </style>
+
+    <style name="clockText">
+        <item name="android:textSize">@dimen/abc_text_size_caption_material</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
     </style>
 
 </resources>

@@ -10,6 +10,7 @@
         android:id="@+id/character_image_back"
         android:layout_width="@dimen/medium_avatar_size"
         android:layout_height="@dimen/medium_avatar_size"
+        android:layout_gravity="center_vertical"
         tools:ignore="RtlHardcoded"
         android:src="@drawable/player_17"
         app:riv_corner_radius="@dimen/medium_avatar_size"
@@ -19,6 +20,7 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/character_image_front"
+        android:layout_gravity="center_vertical"
         android:layout_width="@dimen/medium_avatar_size"
         android:layout_height="@dimen/medium_avatar_size"
         android:layout_marginLeft="@dimen/character_separation_amount"
@@ -26,7 +28,7 @@
         android:src="@drawable/player_18"
         app:riv_corner_radius="@dimen/medium_avatar_size"
         app:riv_border_width="@dimen/character_border_width"
-        app:riv_border_color="@color/background_color"
+        app:riv_border_color="@color/background_dark"
         />
 
 </FrameLayout>

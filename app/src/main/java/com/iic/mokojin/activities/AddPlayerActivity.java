@@ -1,6 +1,7 @@
 package com.iic.mokojin.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -134,6 +136,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         private void selectPerson(@Nullable Person selectedPerson) {
             mProgressDialog = new ProgressHudDialog(getActivity(), getResources().getString(R.string.join_queue_progress));
             mProgressDialog.show();
+            hideSoftKeyboard();
             getPersonToJoin(selectedPerson).continueWithTask(new Continuation<Person, Task<Player>>() {
                 @Override
                 public Task<Player> then(Task<Person> task) throws Exception {
@@ -179,6 +182,11 @@ public class AddPlayerActivity extends ActionBarActivity {
         private void done(Player player) {
             mCurrentSessionStore.refreshData();
             ActivityCompat.finishAfterTransition(getActivity());
+        }
+
+        private void hideSoftKeyboard() {
+            InputMethodManager keyboard = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            keyboard.hideSoftInputFromWindow(getView().getWindowToken(), 0);
         }
 
         @OnClick(R.id.create_person)
