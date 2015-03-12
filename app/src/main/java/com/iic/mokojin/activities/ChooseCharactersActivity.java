@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -74,7 +75,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
     }
 
     public static class ChooseCharactersFragment extends AbstractMokojinFragment {
-        
+
+        private static final String LOG_TAG = ChooseCharactersFragment.class.getSimpleName();
         @InjectView(R.id.character_list_view) GridView mCharacterListView;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
@@ -96,7 +98,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             Intent intent = getActivity().getIntent();
             if (null != intent){
                 String playerId = intent.getStringExtra(PLAYER_EXTRA);
-                mPlayer = Player.loadFromLocalStorage(playerId);
+                mPlayer = mCurrentSessionStore.findPlayerById(playerId);
             }
         }
 
@@ -159,6 +161,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @Subscribe
         public void refreshCharacters(CharacterStore.CharacterListUpdateEvent event) {
             List<Character> characters = mCharacterStore.getCharacters();
+            Log.v(LOG_TAG, "refreshCharacters is player null? " + Boolean.toString(null != mPlayer));
 
             if (null != mPlayer && mCharacterA == null && mCharacterB == null){
                 if (null != mPlayer.getCharacterA()) {

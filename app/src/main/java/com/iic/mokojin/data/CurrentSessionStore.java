@@ -7,6 +7,7 @@ import com.google.common.collect.Collections2;
 import com.iic.mokojin.cloud.getters.GetSessionData;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Person;
+import com.iic.mokojin.models.Player;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.recievers.MokojinBroadcastReceiver;
 import com.squareup.otto.Bus;
@@ -84,5 +85,20 @@ public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.
         }
 
         return currentlyPlaying;
+    }
+
+    public Player findPlayerById(String id) {
+        if (mCurrentMatch != null) {
+            if (mCurrentMatch.getPlayerA().getObjectId().equals(id)) return mCurrentMatch.getPlayerA();
+            if (mCurrentMatch.getPlayerB().getObjectId().equals(id)) return mCurrentMatch.getPlayerB();
+        }
+
+        for (QueueItem queueItem : mQueue) {
+            if (queueItem.getPlayer().getObjectId().equals(id)) {
+                return queueItem.getPlayer();
+            }
+        }
+
+        return null;
     }
 }
