@@ -91,6 +91,10 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (null == getActivity()){
+                    scheduleUpdateClock();
+                    return;
+                }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

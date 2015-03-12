@@ -21,7 +21,7 @@ public class PeopleListStore extends AbstractStore<MokojinBroadcastReceiver.Peop
     private static final String LOG_TAG = PeopleListStore.class.getName();
     public static class PeopleListUpdateEvent {}
 
-    private List<Person> mPeopleList;
+    private List<Person> mPeopleList = Collections.emptyList();
 
     public PeopleListStore(Bus broadcastEventBus) {
         super(broadcastEventBus, PeopleListUpdateEvent.class);
