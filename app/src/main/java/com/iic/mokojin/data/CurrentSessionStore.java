@@ -3,9 +3,12 @@ package com.iic.mokojin.data;
 import android.content.Context;
 import android.util.Pair;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.iic.mokojin.Application;
 import com.iic.mokojin.cloud.getters.GetSessionData;
 import com.iic.mokojin.models.Match;
+import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.QueueItem;
 import com.iic.mokojin.recievers.MokojinBroadcastReceiver;
 import com.squareup.otto.Bus;
@@ -72,5 +75,21 @@ public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.
 
     public Match getCurrentMatch() {
         return mCurrentMatch;
+    }
+
+    public List<Person> getCurrentlyPlayingPeople() {
+        List<Person> currentlyPlaying = new ArrayList<>(
+          Collections2.transform(mQueue, new Function<QueueItem, Person>() {
+              @Override
+              public Person apply(QueueItem input) {
+                  return input.getPlayer().getPerson();
+              }
+          })
+        );
+
+        currentlyPlaying.add(mCurrentMatch.getPlayerA().getPerson());
+        currentlyPlaying.add(mCurrentMatch.getPlayerB().getPerson());
+
+        return currentlyPlaying;
     }
 }

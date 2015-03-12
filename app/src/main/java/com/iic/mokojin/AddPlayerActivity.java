@@ -23,11 +23,11 @@ import android.widget.TextView;
 
 import com.iic.mokojin.cloud.operations.CreatePersonOperation;
 import com.iic.mokojin.cloud.operations.JoinQueueOperation;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.data.PeopleListStore;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.views.ProgressHudDialog;
-import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -69,6 +69,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         private PeopleAdapter mAdapter;
         private ProgressHudDialog mProgressDialog;
         private PeopleListStore mPeopleListStore;
+        private CurrentSessionStore mCurrentSessionStore;
 
         public AddPlayerFragment() {
 
@@ -180,22 +181,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             private List<Person> mFilteredPeople;
 
-            private void filterPeopleCurrentlyPlaying(ParseQuery<Person> query) {
-
-                // TODO
-
-//            ParseQuery<Player> hasMatch = new ParseQuery<>(Player.class);
-//            ParseQuery<Player> hasQueueItem = new ParseQuery<>(Player.class);
-//
-//
-//            List<ParseQuery<Player>> conditions = Lists.newArrayListWithCapacity(2);
-//            conditions.add(hasMatch);
-//            conditions.add(hasQueueItem);
-//            ParseQuery<Player> playerQuery = ParseQuery.or(conditions);
-//
-//
-//            query.whereDoesNotMatchKeyInQuery("id", "person", playerQuery);
-            }
 
             @Override
             public Filter getFilter() {
@@ -274,7 +259,7 @@ public class AddPlayerActivity extends ActionBarActivity {
 
         @Subscribe
         public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
-            mPeople = mPeopleListStore.getPeopleList();
+            mPeople = mPeopleListStore.getPeopleListExculding(mCurrentSessionStore.getCurrentlyPlayingPeople());
             mAdapter.getFilter().filter(null);
         }
 
@@ -284,8 +269,12 @@ public class AddPlayerActivity extends ActionBarActivity {
             mAdapter = new PeopleAdapter();
             mPeopleListView.setAdapter(mAdapter);
 
+            mCurrentSessionStore = CurrentSessionStore.get(getActivity());
+
             mPeopleListStore = PeopleListStore.get(getActivity());
             mPeopleListStore.getEventBus().register(this);
+
+
         }
 
         @Override

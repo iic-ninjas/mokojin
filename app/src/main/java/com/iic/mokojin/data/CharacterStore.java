@@ -10,6 +10,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.List;
 
 import bolts.Continuation;
@@ -21,7 +22,7 @@ import bolts.Task;
 public class CharacterStore extends AbstractStore<MokojinBroadcastReceiver.CharacterListChangeChangeBroadcastEvent, CharacterStore.CharacterListUpdateEvent> {
     private static final String LOG_TAG = CharacterStore.class.getName();
 
-    private List<com.iic.mokojin.models.Character> mCharacters;
+    private List<com.iic.mokojin.models.Character> mCharacters = Collections.emptyList();
 
     public static class CharacterListUpdateEvent {
     }
