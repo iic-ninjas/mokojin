@@ -30,6 +30,7 @@ import com.iic.mokojin.views.ProgressHudDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,6 +69,8 @@ public class AddPlayerActivity extends ActionBarActivity {
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
         @InjectView(R.id.create_person) ImageButton mAddPlayerButton;
+
+        private List<Person> mPeople = Collections.emptyList();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -191,6 +194,7 @@ public class AddPlayerActivity extends ActionBarActivity {
 
         @Subscribe
         public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
+            mPeople = mPeopleListStore.getPeopleListExculding(mCurrentSessionStore.getCurrentlyPlayingPeople());
             mAdapter.getFilter().filter(null);
         }
 
@@ -207,11 +211,11 @@ public class AddPlayerActivity extends ActionBarActivity {
                         List<Person> filteredPeople = new ArrayList<>();
 
                         if (TextUtils.isEmpty(constraint)) {
-                            filteredPeople = mPeopleListStore.getPeopleList();
+                            filteredPeople = mPeople;
                         } else {
                             constraint = constraint.toString().toLowerCase();
-                            for (int i = 0; i < mPeopleListStore.getPeopleList().size(); i++) {
-                                Person person = mPeopleListStore.getPeopleList().get(i);
+                            for (int i = 0; i < mPeople.size(); i++) {
+                                Person person = mPeople.get(i);
                                 if (person.getName().toLowerCase().startsWith(constraint.toString()))  {
                                     filteredPeople.add(person);
                                 }
