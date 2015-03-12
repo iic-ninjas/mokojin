@@ -35,7 +35,8 @@ public class CharacterViewer extends FrameLayout {
     }
     static enum Size {
         big,
-        small
+        small,
+        huge
     }
 
     public CharacterViewer(Context context) {
@@ -71,20 +72,26 @@ public class CharacterViewer extends FrameLayout {
         ButterKnife.inject(this);
         if (mSize == Size.small){
             mFrontImage.setBorderColor(getResources().getColor(R.color.background_material_light));
-            shrinkView(mFrontImage);
-            shrinkView(mBackImage);
+            setImagesSize(mFrontImage, getResources().getDimensionPixelSize(R.dimen.small_avatar_size));
+            setImagesSize(mBackImage, getResources().getDimensionPixelSize(R.dimen.small_avatar_size));
             mMargin = getResources().getDimensionPixelSize(R.dimen.smaller_character_separation_amount);
             mBorderWidth = getResources().getDimension(R.dimen.smaller_character_border_width);
-        } else {
+        } else if (mSize == Size.big) {
             mMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
             mBorderWidth = getResources().getDimension(R.dimen.character_border_width);
+        } else if (mSize == Size.huge) {
+            setImagesSize(mFrontImage, getResources().getDimensionPixelSize(R.dimen.large_avatar_size));
+            setImagesSize(mBackImage, getResources().getDimensionPixelSize(R.dimen.large_avatar_size));
+            mMargin = getResources().getDimensionPixelSize(R.dimen.character_separation_amount);
+            mBorderWidth = getResources().getDimension(R.dimen.character_border_width);
+
         }
     }
 
-    private void shrinkView(RoundedImageView imageView) {
+    private void setImagesSize(RoundedImageView imageView, int pixelSize) {
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        layoutParams.height = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
-        layoutParams.width = getResources().getDimensionPixelSize(R.dimen.small_avatar_size);
+        layoutParams.height = pixelSize;
+        layoutParams.width = pixelSize;
         imageView.setLayoutParams(layoutParams);
     }
 
