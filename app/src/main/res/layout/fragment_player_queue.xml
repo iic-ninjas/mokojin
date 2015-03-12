@@ -1,13 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.iic.mokojin.PlayerQueueFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.iic.mokojin.PlayerQueueFragment"
+    android:background="@android:color/background_light" >
 
     <de.timroes.android.listview.EnhancedListView
         android:id="@+id/queue_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:transitionName="white_part"
+        />
     <TextView
         android:id="@+id/empty_queue_text"
         android:layout_width="match_parent"
@@ -21,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/floatingActionButton"
+        android:transitionName="fab"
         />
 
 </RelativeLayout>

@@ -37,7 +37,7 @@ public abstract class AbstractStore<TBroadcastEvent, TStoreEvent> {
         refreshData();
     }
 
-    private void refreshData() {
+    public void refreshData() {
         onRefreshData().onSuccess(new Continuation<Void, Void>() {
             @Override
             public Void then(Task<Void> task) throws Exception {

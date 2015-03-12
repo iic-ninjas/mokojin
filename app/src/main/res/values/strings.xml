@@ -17,5 +17,7 @@
     <string name="create_user_progress">Creating new user</string>
     <string name="ok">OK</string>
     <string name="ending_match_progress">Ending Match</string>
+    <string name="action_good_night">Good Night</string>
+    <string name="good_night_progress">Saying good night...</string>
 
 </resources>

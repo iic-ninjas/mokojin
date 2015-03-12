@@ -1,8 +1,5 @@
 package com.iic.mokojin.data;
 
-import android.content.Context;
-
-import com.iic.mokojin.Application;
 import com.iic.mokojin.cloud.getters.GetPeople;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.recievers.MokojinBroadcastReceiver;
@@ -22,15 +19,9 @@ import bolts.Task;
  */
 public class PeopleListStore extends AbstractStore<MokojinBroadcastReceiver.PeopleListChangeBroadcastEvent, PeopleListStore.PeopleListUpdateEvent> {
     private static final String LOG_TAG = PeopleListStore.class.getName();
+    public static class PeopleListUpdateEvent {}
 
-    private List<Person> mPeopleList;
-
-    public static class PeopleListUpdateEvent {
-    }
-
-    public static PeopleListStore get(Context context) {
-        return ((Application)context.getApplicationContext()).getPeopleListStore();
-    }
+    private List<Person> mPeopleList = Collections.emptyList();
 
     public PeopleListStore(Bus broadcastEventBus) {
         super(broadcastEventBus, PeopleListUpdateEvent.class);

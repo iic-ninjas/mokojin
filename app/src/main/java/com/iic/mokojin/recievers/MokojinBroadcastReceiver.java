@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.iic.mokojin.Application;
+import com.squareup.otto.Bus;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 /**
  * Created by giladgo on 3/11/15.
@@ -21,11 +24,15 @@ public class MokojinBroadcastReceiver extends android.content.BroadcastReceiver 
     public static class PeopleListChangeBroadcastEvent { }
     public static class CharacterListChangeChangeBroadcastEvent { }
 
+    @Inject Bus mBroadcastReceiverBus;
+
     public MokojinBroadcastReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        ((Application) context.getApplicationContext()).inject(this);
+
         Log.d(LOG_TAG, "received broadcast!");
         String dataString = intent.getStringExtra("com.parse.Data");
 
@@ -41,7 +48,7 @@ public class MokojinBroadcastReceiver extends android.content.BroadcastReceiver 
             // TODO handle other types of events
 
             if (event != null) {
-                ((Application)context.getApplicationContext()).getBroadcastReceiverEventBus().post(event);
+                mBroadcastReceiverBus.post(event);
             }
         }
         catch (JSONException ignored) {
