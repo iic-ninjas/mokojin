@@ -1,8 +1,12 @@
 package com.iic.mokojin.modules;
 
+import com.iic.mokojin.activities.AddPlayerActivity;
+import com.iic.mokojin.activities.ChooseCharactersActivity;
 import com.iic.mokojin.activities.CurrentMatchFragment;
 import com.iic.mokojin.activities.PlayerQueueFragment;
+import com.iic.mokojin.data.CharacterStore;
 import com.iic.mokojin.data.CurrentSessionStore;
+import com.iic.mokojin.data.PeopleListStore;
 import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;
@@ -17,6 +21,8 @@ import dagger.Provides;
     injects = {
             CurrentMatchFragment.class,
             PlayerQueueFragment.class,
+            AddPlayerActivity.AddPlayerFragment.class,
+            ChooseCharactersActivity.ChooseCharactersFragment.class,
     }
 )
 public class DataModule {
@@ -28,6 +34,14 @@ public class DataModule {
 
     @Provides @Singleton CurrentSessionStore provideCurrentSessionStore(Bus broadcastEventBus) {
         return new CurrentSessionStore(broadcastEventBus);
+    }
+
+    @Provides @Singleton CharacterStore provideCharacterStore(Bus broadcastEventBus) {
+        return new CharacterStore(broadcastEventBus);
+    }
+
+    @Provides @Singleton PeopleListStore providePeopleListStore(Bus broadcastEventBus) {
+        return new PeopleListStore(broadcastEventBus);
     }
 
 }

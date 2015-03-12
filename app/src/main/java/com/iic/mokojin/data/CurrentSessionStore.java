@@ -19,52 +19,42 @@ import bolts.Task;
 /**
  * Created by giladgo on 3/10/15.
  */
-public class CurrentSessionStore {
+public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.SessionDataChangeBroadcastEvent, CurrentSessionStore.SessionUpdateEvent> {
 
     private static final String LOG_TAG = CurrentSessionStore.class.getName();
-
-    private Bus mEventBus;
+    public static class SessionUpdateEvent {}
 
     private List<QueueItem> mQueue = new ArrayList<>();
     private Match mCurrentMatch = null;
 
-    public Bus getEventBus() {
-        return mEventBus;
-    }
-
-    public static class SessionUpdateEvent {}
-
     public CurrentSessionStore(Bus broadcastEventBus) {
-        mEventBus = new Bus("Current Session Store");
-
-        mEventBus.register(this);
-        broadcastEventBus.register(this);
-
-        refreshData();
+        super(broadcastEventBus, SessionUpdateEvent.class);
     }
 
-    private void refreshData() {
-        GetSessionData.getSessionData().onSuccess(new Continuation<Pair<Match, List<QueueItem>>, Void>() {
+    @Override
+    protected Task<Void> onRefreshData() {
+        return GetSessionData.getSessionData().onSuccess(new Continuation<Pair<Match, List<QueueItem>>, Void>() {
             @Override
             public Void then(Task<Pair<Match, List<QueueItem>>> pairTask) throws Exception {
                 Pair<Match, List<QueueItem>> pair = pairTask.getResult();
                 mCurrentMatch = pair.first;
                 mQueue = pair.second;
-
-                mEventBus.post(produceSessionUpdateEvent());
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);
     }
 
+    // These are here because Otto can't handle generic parameters, due to type erasure (Thanks, Java :( )
     @Subscribe
-    public void onSessionUpdate(MokojinBroadcastReceiver.SessionDataChangeBroadcastEvent event) {
-        refreshData();
+    @Override
+    public void onBroadcastEvent(MokojinBroadcastReceiver.SessionDataChangeBroadcastEvent event) {
+        super.onBroadcastEvent(event);
     }
 
     @Produce
-    public SessionUpdateEvent produceSessionUpdateEvent() {
-        return new SessionUpdateEvent();
+    @Override
+    public SessionUpdateEvent produceUpdateEvent() {
+        return super.produceUpdateEvent();
     }
 
     public List<QueueItem> getQueue() {
@@ -74,6 +64,4 @@ public class CurrentSessionStore {
     public Match getCurrentMatch() {
         return mCurrentMatch;
     }
-
-
 }
