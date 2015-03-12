@@ -26,10 +26,10 @@ public class GetSessionData {
             @Override
             public Pair<Match, List<QueueItem>> then(Task<HashMap<String, Object>> task) throws Exception {
                 HashMap<String, Object> resultMap = task.getResult();
-                Match match = (Match)resultMap.get("match");
+                Match match = (Match) resultMap.get("match");
 
                 List<QueueItem> queueItemList = new ArrayList<>();
-                ArrayList objectList = (ArrayList)resultMap.get("queue");
+                ArrayList objectList = (ArrayList) resultMap.get("queue");
                 for (Object queueItem : objectList) {
                     queueItemList.add((QueueItem)queueItem);
                 }

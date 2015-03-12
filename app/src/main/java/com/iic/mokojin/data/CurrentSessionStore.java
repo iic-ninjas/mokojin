@@ -51,7 +51,7 @@ public class CurrentSessionStore {
         refreshData();
     }
 
-    private void refreshData() {
+    public void refreshData() {
         GetSessionData.getSessionData().onSuccess(new Continuation<Pair<Match, List<QueueItem>>, Void>() {
             @Override
             public Void then(Task<Pair<Match, List<QueueItem>>> pairTask) throws Exception {

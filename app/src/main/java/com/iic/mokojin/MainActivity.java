@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.iic.mokojin.cloud.operations.GoodNightOperation;
+import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.views.ProgressHudDialog;
 
 import bolts.Continuation;
@@ -42,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
                     dialog.dismiss();
-                    //TODO: Trigger Gilad's refresh
+                    CurrentSessionStore.get(MainActivity.this).refreshData();
                     return null;
                 }
             });
