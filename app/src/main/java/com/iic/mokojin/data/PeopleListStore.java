@@ -20,17 +20,12 @@ import bolts.Task;
 /**
  * Created by giladgo on 3/11/15.
  */
-public class PeopleListStore {
+public class PeopleListStore extends AbstractStore<MokojinBroadcastReceiver.PeopleListChangeBroadcastEvent, PeopleListStore.PeopleListUpdateEvent> {
     private static final String LOG_TAG = PeopleListStore.class.getName();
 
     private List<Person> mPeopleList;
-    private Bus mEventBus;
 
     public static class PeopleListUpdateEvent {
-    }
-
-    public Bus getEventBus() {
-        return mEventBus;
     }
 
     public static PeopleListStore get(Context context) {
@@ -38,15 +33,12 @@ public class PeopleListStore {
     }
 
     public PeopleListStore(Bus broadcastEventBus) {
-        mEventBus = new Bus("People List Store");
-        mEventBus.register(this);
-        broadcastEventBus.register(this);
-
-        refreshData();
+        super(broadcastEventBus, PeopleListUpdateEvent.class);
     }
 
-    private void refreshData() {
-        GetPeople.getPeople().onSuccess(new Continuation<List<Person>, Void>() {
+    @Override
+    protected Task<Void> onRefreshData() {
+        return GetPeople.getPeople().onSuccess(new Continuation<List<Person>, Void>() {
             @Override
             public Void then(Task<List<Person>> task) throws Exception {
                 mPeopleList = task.getResult();
@@ -56,22 +48,23 @@ public class PeopleListStore {
                         return lhs.getName().compareTo(rhs.getName());
                     }
                 });
-                mEventBus.post(producePeopleListUpdateEvent());
                 return null;
             }
         });
     }
 
+    // These are here because Otto can't handle generic parameters, due to type erasure (Thanks, Java :( )
     @Subscribe
-    public void onPeopleListUpdate(MokojinBroadcastReceiver.PeopleListChangeBroadcastEvent event) {
-        refreshData();
+    @Override
+    public void onBroadcastEvent(MokojinBroadcastReceiver.PeopleListChangeBroadcastEvent event) {
+        super.onBroadcastEvent(event);
     }
 
     @Produce
-    public PeopleListUpdateEvent producePeopleListUpdateEvent() {
-        return new PeopleListUpdateEvent();
+    @Override
+    public PeopleListUpdateEvent produceUpdateEvent() {
+        return super.produceUpdateEvent();
     }
-
 
     public List<Person> getPeopleList() {
         return mPeopleList;

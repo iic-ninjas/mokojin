@@ -18,17 +18,12 @@ import bolts.Task;
 /**
  * Created by giladgo on 3/11/15.
  */
-public class CharacterStore {
+public class CharacterStore extends AbstractStore<MokojinBroadcastReceiver.CharacterListChangeChangeBroadcastEvent, CharacterStore.CharacterListUpdateEvent> {
     private static final String LOG_TAG = CharacterStore.class.getName();
 
     private List<com.iic.mokojin.models.Character> mCharacters;
-    private Bus mEventBus;
 
     public static class CharacterListUpdateEvent {
-    }
-
-    public Bus getEventBus() {
-        return mEventBus;
     }
 
     public static CharacterStore get(Context context) {
@@ -36,34 +31,32 @@ public class CharacterStore {
     }
 
     public CharacterStore(Bus broadcastEventBus) {
-        mEventBus = new Bus("Character Store");
-        mEventBus.register(this);
-        broadcastEventBus.register(this);
-
-        refreshData();
+        super(broadcastEventBus, CharacterListUpdateEvent.class);
     }
 
-    private void refreshData() {
-        GetCharacters.getCharacters().onSuccess(new Continuation<List<Character>, Void>() {
+    @Override
+    protected Task<Void> onRefreshData() {
+        return GetCharacters.getCharacters().onSuccess(new Continuation<List<Character>, Void>() {
             @Override
             public Void then(Task<List<Character>> task) throws Exception {
                 mCharacters = task.getResult();
-                mEventBus.post(produceCharacterUpdateEvent());
                 return null;
             }
         });
     }
 
+    // These are here because Otto can't handle generic parameters, due to type erasure (Thanks, Java :( )
     @Subscribe
-    public void onCharacterUpdate(MokojinBroadcastReceiver.CharacterListChangeChangeBroadcastEvent event) {
-        refreshData();
+    @Override
+    public void onBroadcastEvent(MokojinBroadcastReceiver.CharacterListChangeChangeBroadcastEvent event) {
+        super.onBroadcastEvent(event);
     }
 
     @Produce
-    public CharacterListUpdateEvent produceCharacterUpdateEvent() {
-        return new CharacterListUpdateEvent();
+    @Override
+    public CharacterListUpdateEvent produceUpdateEvent() {
+        return super.produceUpdateEvent();
     }
-
 
     public List<Character> getCharacters() {
         return mCharacters;
