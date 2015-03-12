@@ -1,7 +1,11 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.LeaveQueueOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.QueueItem;
@@ -21,29 +26,26 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemLongClick;
 import de.timroes.android.listview.EnhancedListView;
 
-public class PlayerQueueFragment extends Fragment {
+public class PlayerQueueFragment extends AbstractMokojinFragment {
 
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
+    @InjectView(R.id.add_player_button) View mAddPlayerButton;
     QueueAdapter mQueueAdapter;
 
-    private CurrentSessionStore mCurrentSessionStore;
+    @Inject CurrentSessionStore mCurrentSessionStore;
 
     private List<QueueItem> mQueueItems = new ArrayList<>();
 
     public PlayerQueueFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mCurrentSessionStore = CurrentSessionStore.get(getActivity());
     }
 
     @Override
@@ -95,6 +97,10 @@ public class PlayerQueueFragment extends Fragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (null == getActivity()){
+                    scheduleUpdateClock();
+                    return;
+                }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -116,7 +122,12 @@ public class PlayerQueueFragment extends Fragment {
 
     @OnClick(R.id.add_player_button)
     void onAddPlayerClick(){
-        AddPlayerActivity.launch(getActivity());
+        Intent addPlayerIntent = new Intent(getActivity(), AddPlayerActivity.class);
+        ActivityCompat.startActivity(getActivity(),
+                addPlayerIntent,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create((View) mQueueListView, "white_part"),
+                        Pair.create(mAddPlayerButton, "fab")).toBundle());
     }
 
     class QueueAdapter extends BaseAdapter {

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" 
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    tools:context="com.iic.mokojin.AddPlayerActivity.AddPlayerFragment"
+    tools:context="com.iic.mokojin.activities.AddPlayerActivity.AddPlayerFragment"
     android:gravity="top"
     >
     <LinearLayout 
@@ -36,6 +36,8 @@
         android:layout_height="match_parent"
         android:id="@+id/people_list_view"
         android:choiceMode="singleChoice"
+        android:transitionName="white_part"
+        android:background="@android:color/background_light"
         />
 </LinearLayout>
     <com.getbase.floatingactionbutton.AddFloatingActionButton
@@ -50,5 +52,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="false"
         android:layout_alignParentRight="true"
+        android:transitionName="fab"
         />
 </RelativeLayout>

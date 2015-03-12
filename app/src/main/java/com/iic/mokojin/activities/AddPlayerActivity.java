@@ -1,12 +1,10 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.CreatePersonOperation;
 import com.iic.mokojin.cloud.operations.JoinQueueOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
@@ -31,7 +30,10 @@ import com.iic.mokojin.views.ProgressHudDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -46,11 +48,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
     private static final String LOG_TAG = AddPlayerActivity.class.getName();
 
-    public static void launch(Context context){
-        Intent addPlayerIntent = new Intent(context, AddPlayerActivity.class);
-        context.startActivity(addPlayerIntent);
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,24 +59,26 @@ public class AddPlayerActivity extends ActionBarActivity {
         }
     }
 
-
-
-    public static class AddPlayerFragment extends Fragment {
+    public static class AddPlayerFragment extends AbstractMokojinFragment {
 
         private PeopleAdapter mAdapter;
         private ProgressHudDialog mProgressDialog;
-        private PeopleListStore mPeopleListStore;
-        private CurrentSessionStore mCurrentSessionStore;
-
-        public AddPlayerFragment() {
-
-        }
-
+        @Inject PeopleListStore mPeopleListStore;
+        @Inject CurrentSessionStore mCurrentSessionStore;
 
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
         @InjectView(R.id.create_person) ImageButton mAddPlayerButton;
 
+        private List<Person> mPeople = Collections.emptyList();
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_add_player, container, false);
+            ButterKnife.inject(this, rootView);
+            return rootView;
+        }
 
         @Override
         public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -87,8 +86,20 @@ public class AddPlayerActivity extends ActionBarActivity {
             mAddPlayerButton.setEnabled(false);
         }
 
+        @Override
+        public void onStart() {
+            super.onStart();
+            mAdapter = new PeopleAdapter();
+            mPeopleListView.setAdapter(mAdapter);
 
+            mPeopleListStore.getEventBus().register(this);
+        }
 
+        @Override
+        public void onStop() {
+            super.onStop();
+            mPeopleListStore.getEventBus().unregister(this);
+        }
 
         // If there is a person selected in the listview - returns it (as a fulfilled promise)
         // Otherwise - creates a new person, and returns a promise which is fulfilled once that
@@ -98,7 +109,13 @@ public class AddPlayerActivity extends ActionBarActivity {
                 if (null != mProgressDialog){
                     mProgressDialog.setMessage(getResources().getString(R.string.create_user_progress));
                 }
-                return new CreatePersonOperation().run(getTextFieldValue());
+                return new CreatePersonOperation().run(getTextFieldValue()).continueWith(new Continuation<Person, Person>() {
+                    @Override
+                    public Person then(Task<Person> task) throws Exception {
+                        mPeopleListStore.refreshData();
+                        return task.getResult();
+                    }
+                });
             } else {
                 return Task.forResult(selectedPerson);
             }
@@ -108,7 +125,6 @@ public class AddPlayerActivity extends ActionBarActivity {
             return mPersonNameEditText.getText().toString();
         }
 
-        @SuppressWarnings("unused")
         @OnItemClick(R.id.people_list_view)
         void onListViewItemClick(int position) {
             selectPerson(mAdapter.getItem(position));
@@ -143,7 +159,7 @@ public class AddPlayerActivity extends ActionBarActivity {
             }, Task.UI_THREAD_EXECUTOR).continueWith(new Continuation<Void, Object>() {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
-                    if (task.isFaulted()){
+                    if (task.isFaulted()) {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("Error Joining Queue")
                                 .setMessage(task.getError().getMessage())
@@ -161,7 +177,8 @@ public class AddPlayerActivity extends ActionBarActivity {
         }
 
         private void done(Player player) {
-            getActivity().finish();
+            mCurrentSessionStore.refreshData();
+            ActivityCompat.finishAfterTransition(getActivity());
         }
 
         @OnClick(R.id.create_person)
@@ -175,12 +192,15 @@ public class AddPlayerActivity extends ActionBarActivity {
             mAdapter.getFilter().filter(text);
         }
 
-        private List<Person> mPeople;
+        @Subscribe
+        public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
+            mPeople = mPeopleListStore.getPeopleListExculding(mCurrentSessionStore.getCurrentlyPlayingPeople());
+            mAdapter.getFilter().filter(null);
+        }
 
         class PeopleAdapter extends BaseAdapter implements Filterable {
 
             private List<Person> mFilteredPeople;
-
 
             @Override
             public Filter getFilter() {
@@ -253,42 +273,6 @@ public class AddPlayerActivity extends ActionBarActivity {
                 return convertView;
             }
 
-            
-            
-        }
-
-        @Subscribe
-        public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
-            mPeople = mPeopleListStore.getPeopleListExculding(mCurrentSessionStore.getCurrentlyPlayingPeople());
-            mAdapter.getFilter().filter(null);
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            mAdapter = new PeopleAdapter();
-            mPeopleListView.setAdapter(mAdapter);
-
-            mCurrentSessionStore = CurrentSessionStore.get(getActivity());
-
-            mPeopleListStore = PeopleListStore.get(getActivity());
-            mPeopleListStore.getEventBus().register(this);
-
-
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            mPeopleListStore.getEventBus().unregister(this);
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_add_player, container, false);
-            ButterKnife.inject(this, rootView);
-            return rootView;
         }
     }
 }

@@ -1,11 +1,9 @@
 package com.iic.mokojin.data;
 
-import android.content.Context;
 import android.util.Pair;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.iic.mokojin.Application;
 import com.iic.mokojin.cloud.getters.GetSessionData;
 import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Person;
@@ -27,20 +25,13 @@ import bolts.Task;
 public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.SessionDataChangeBroadcastEvent, CurrentSessionStore.SessionUpdateEvent> {
 
     private static final String LOG_TAG = CurrentSessionStore.class.getName();
+    public static class SessionUpdateEvent {}
 
     private List<QueueItem> mQueue = new ArrayList<>();
     private Match mCurrentMatch = null;
 
-    public static CurrentSessionStore get(Context context) {
-        return ((Application)context.getApplicationContext()).getCurrentSessionStore();
-    }
-
     public CurrentSessionStore(Bus broadcastEventBus) {
         super(broadcastEventBus, SessionUpdateEvent.class);
-    }
-
-
-    public static class SessionUpdateEvent {
     }
 
     @Override

@@ -1,14 +1,13 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.EndMatchOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.models.Match;
@@ -18,6 +17,8 @@ import com.iic.mokojin.views.CharacterViewer;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
@@ -25,14 +26,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class CurrentMatchFragment extends Fragment {
+public class CurrentMatchFragment extends AbstractMokojinFragment {
 
     private static final String LOG_TAG = CurrentMatchFragment.class.getName();
 
     private Match mCurrentMatch;
 
     @InjectView(R.id.empty_text_view)  View mEmptyText;
-    @InjectView(R.id.players_container) View mPlayersContainer;
+    @InjectView(R.id.active_match) View mActiveMatch;
 
     @InjectView(R.id.player_a_name)  TextView mPlayerANameTextView;
     @InjectView(R.id.player_b_name)  TextView mPlayerBNameTextView;
@@ -43,18 +44,13 @@ public class CurrentMatchFragment extends Fragment {
     @InjectView(R.id.chance_bar) ProgressBar mChanceBar;
     @InjectView(R.id.chance_to_win) TextView mChanceText;
 
-    private CurrentSessionStore mCurrentSessionStore;
-
-    public CurrentMatchFragment() {
-    }
+    @Inject CurrentSessionStore mCurrentSessionStore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_match, container, false);
         ButterKnife.inject(this, rootView);
-        mCurrentSessionStore  = CurrentSessionStore.get(getActivity());
-
         return rootView;
     }
 
@@ -80,7 +76,7 @@ public class CurrentMatchFragment extends Fragment {
     private void refreshUI() {
         if (mCurrentMatch != null) {
             mEmptyText.setVisibility(View.INVISIBLE);
-            mPlayersContainer.setVisibility(View.VISIBLE);
+            mActiveMatch.setVisibility(View.VISIBLE);
 
             mPlayerANameTextView.setText(mCurrentMatch.getPlayerA().getPerson().getName());
             mPlayerBNameTextView.setText(mCurrentMatch.getPlayerB().getPerson().getName());
@@ -88,15 +84,11 @@ public class CurrentMatchFragment extends Fragment {
             mPlayerACharacter.setPlayer(mCurrentMatch.getPlayerA());
             mPlayerBCharacter.setPlayer(mCurrentMatch.getPlayerB());
 
-            mChanceBar.setVisibility(View.VISIBLE);
-            mChanceText.setVisibility(View.VISIBLE);
             mChanceBar.setProgress(MatchPresenter.getProgress(mCurrentMatch));
             mChanceText.setText(MatchPresenter.getRatioString(mCurrentMatch));
         } else {
             mEmptyText.setVisibility(View.VISIBLE);
-            mPlayersContainer.setVisibility(View.INVISIBLE);
-            mChanceBar.setVisibility(View.INVISIBLE);
-            mChanceText.setVisibility(View.INVISIBLE);
+            mActiveMatch.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -106,8 +98,8 @@ public class CurrentMatchFragment extends Fragment {
         new EndMatchOperation(mCurrentMatch, playerType).run().continueWith(new Continuation<Match, Void>() {
             @Override
             public Void then(Task<Match> task) throws Exception {
-                Log.i(LOG_TAG, "Match ended");
-                dialog.hide();
+                dialog.dismiss();
+                mCurrentSessionStore.refreshData();
                 return null;
             }
         }, Task.UI_THREAD_EXECUTOR);

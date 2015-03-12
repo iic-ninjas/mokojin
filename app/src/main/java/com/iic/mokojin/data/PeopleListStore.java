@@ -25,15 +25,9 @@ import bolts.Task;
  */
 public class PeopleListStore extends AbstractStore<MokojinBroadcastReceiver.PeopleListChangeBroadcastEvent, PeopleListStore.PeopleListUpdateEvent> {
     private static final String LOG_TAG = PeopleListStore.class.getName();
+    public static class PeopleListUpdateEvent {}
 
     private List<Person> mPeopleList = Collections.emptyList();
-
-    public static class PeopleListUpdateEvent {
-    }
-
-    public static PeopleListStore get(Context context) {
-        return ((Application)context.getApplicationContext()).getPeopleListStore();
-    }
 
     public PeopleListStore(Bus broadcastEventBus) {
         super(broadcastEventBus, PeopleListUpdateEvent.class);

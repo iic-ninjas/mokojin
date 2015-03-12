@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
     android:layout_width="match_parent" android:layout_height="match_parent"
     tools:context=".CurrentMatchActivity" tools:ignore="MergeRootFrame" android:orientation="vertical">
-    <fragment android:name="com.iic.mokojin.CurrentMatchFragment"
+    <fragment android:name="com.iic.mokojin.activities.CurrentMatchFragment"
         android:id="@+id/current_match"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         />
-    <fragment android:name="com.iic.mokojin.PlayerQueueFragment"
+    <fragment android:name="com.iic.mokojin.activities.PlayerQueueFragment"
         android:id="@+id/player_queue"
         android:layout_width="match_parent"
         android:layout_height="0dp"

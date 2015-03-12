@@ -34,7 +34,7 @@ public class GetSessionData {
                 }
 
                 List<QueueItem> queueItemList = new ArrayList<>();
-                ArrayList objectList = (ArrayList)resultMap.get("queue");
+                ArrayList objectList = (ArrayList) resultMap.get("queue");
                 for (Object queueItem : objectList) {
                     queueItemList.add((QueueItem)queueItem);
                 }
