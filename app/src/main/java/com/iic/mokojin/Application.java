@@ -1,9 +1,12 @@
 package com.iic.mokojin;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.iic.mokojin.models.Models;
 import com.iic.mokojin.modules.AndroidModule;
 import com.iic.mokojin.modules.DataModule;
 import com.parse.Parse;
+import com.parse.ParsePush;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +18,7 @@ import dagger.ObjectGraph;
  */
 public class Application extends android.app.Application {
 
+    private static final String LOG_TAG = Application.class.getSimpleName();
     private ObjectGraph mObjectGraph;
 
     public void onCreate() {
@@ -26,6 +30,11 @@ public class Application extends android.app.Application {
         Parse.initialize(this, "GeJyJhvvsIe540zKyn9rCZwSv7AIEcc11DHQjSAV", "40quo2Icf83unfXkDu2ZJjEcecPsHl03aqiuNsbH");
 
         mObjectGraph = ObjectGraph.create(getModules().toArray());
+
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            ParsePush.subscribeInBackground("");
+        }
     }
 
     protected List<Object> getModules() {
