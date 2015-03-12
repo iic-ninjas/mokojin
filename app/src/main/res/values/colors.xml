@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="light_blue">#ff47a7ee</color>
-    <color name="grey">#cccccc</color>
+
+    <color name="primary">#F44336</color>
+    <color name="primary_darker">#D32F2F</color>
+    <color name="primary_pressed">#BB3329</color>
+    <color name="primary_disabled">#EF8078</color>
+
+    <color name="background">#CFD8DC</color>
+    <color name="background_dark">#263238</color>
+
+    <color name="chance_a">#3F51B5</color>
+    <color name="chance_b">#4CAF50</color>
+
+    <color name="selected_row">#90A4AE</color>
+    <color name="selected_ripple">#78909C</color>
+
     <color name="white">#FFF</color>
-    <color name="select_color">#FF1744</color>
-    <color name="background_color">#3E1C17</color>
-    <color name="actionbar_color">#5B180E</color>
-    
-    <color name="fab_color">#BB2B16</color>
-    <color name="fab_color_pressed">#ff972513</color>
-    <color name="fab_color_disabled">#6C3128</color>
+
 </resources>

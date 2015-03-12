@@ -4,7 +4,7 @@
     <!-- Define the background properties like color etc -->
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/select_color"/>
+            <solid android:color="@color/chance_a"/>
         </shape>
     </item>
 
@@ -12,7 +12,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="#1772FF"/>
+                <solid android:color="@color/chance_b"/>
             </shape>
         </clip>
     </item>
