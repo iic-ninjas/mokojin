@@ -1,19 +1,23 @@
-package com.iic.mokojin;
+package com.iic.mokojin.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.GoodNightOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.views.ProgressHudDialog;
+
+import javax.inject.Inject;
 
 import bolts.Continuation;
 import bolts.Task;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AbstractMokojinActivity {
+
+    @Inject CurrentSessionStore mCurrentSessionStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
                     dialog.dismiss();
-                    CurrentSessionStore.get(MainActivity.this).refreshData();
+                    mCurrentSessionStore.refreshData();
                     return null;
                 }
             });
