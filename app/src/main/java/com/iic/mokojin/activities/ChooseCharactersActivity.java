@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +31,7 @@ import com.iic.mokojin.presenters.CharacterPresenter;
 import com.iic.mokojin.views.ProgressHudDialog;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,8 +50,6 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
     public static void chooseCharacter(Activity context, Player player) {
         Intent selectCharacterIntent = new Intent(context, ChooseCharactersActivity.class);
-
-        player.saveToLocalStorage();
         selectCharacterIntent.putExtra(PLAYER_EXTRA, player.getObjectId());
         ActivityCompat.startActivity(context,
                 selectCharacterIntent,
@@ -86,6 +84,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         private Integer mCharacterB;
         @Inject CharacterStore mCharacterStore;
         @Inject CurrentSessionStore mCurrentSessionStore;
+        private List<Character> mCharacters = Collections.emptyList();
 
         public ChooseCharactersFragment() {
             setHasOptionsMenu(true);
@@ -160,25 +159,26 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
         @Subscribe
         public void refreshCharacters(CharacterStore.CharacterListUpdateEvent event) {
-            List<Character> characters = mCharacterStore.getCharacters();
-            Log.v(LOG_TAG, "refreshCharacters is player null? " + Boolean.toString(null != mPlayer));
+            mCharacters = mCharacterStore.getCharacters();
+
+            if (mCharacters.isEmpty()) return;
+
+            mCharacterAdapter.notifyDataSetChanged();
 
             if (null != mPlayer && mCharacterA == null && mCharacterB == null){
                 if (null != mPlayer.getCharacterA()) {
-                    mCharacterA = characters.indexOf(mPlayer.getCharacterA());
+                    mCharacterA = mCharacters.indexOf(mPlayer.getCharacterA());
                     if (null != mCharacterA) {
                         mCharacterListView.setItemChecked(mCharacterA, true);
                         mCharacterListView.smoothScrollToPosition(mCharacterA);
                     }
                 }
                 if (null != mPlayer.getCharacterB()) {
-                    mCharacterB = characters.indexOf(mPlayer.getCharacterB());
+                    mCharacterB = mCharacters.indexOf(mPlayer.getCharacterB());
                     if (null != mCharacterB) mCharacterListView.setItemChecked(mCharacterB, true);
                 }
             }
 
-            mCharacterAdapter = new CharacterAdapter(getActivity(), characters);
-            mCharacterListView.setAdapter(mCharacterAdapter);
         }
 
         @Override
@@ -187,6 +187,8 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.choose_character_fragment, container, false);
             ButterKnife.inject(this, rootView);
 
+            mCharacterAdapter = new CharacterAdapter(getActivity());
+            mCharacterListView.setAdapter(mCharacterAdapter);
 
             return rootView;
         }
@@ -236,57 +238,57 @@ public class ChooseCharactersActivity extends ActionBarActivity {
             return mCharacterA != null;
         }
 
-    }
+        class CharacterAdapter extends BaseAdapter {
 
-    static class CharacterAdapter extends BaseAdapter {
+            private Context mContext;
 
-        private Context mContext;
-        private List<Character> mCharacters;
-
-        public CharacterAdapter(Context context, List<Character> characters) {
-            mCharacters = characters;
-            mContext = context;
-        }
-
-
-        @Override
-        public int getCount() {
-            return mCharacters.size();
-        }
-
-        @Override
-        public Character getItem(int position) {
-            return mCharacters.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(mContext, R.layout.character_list_item, null);
-                convertView.setTag(new CharacterViewHolder(convertView));
+            public CharacterAdapter(Context context) {
+                mContext = context;
             }
 
-            Character character = getItem(position);
-            CharacterViewHolder viewHolder = (CharacterViewHolder) convertView.getTag();
-            viewHolder.textView.setText(character.getName());
-            viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(mContext, character));
 
-            return convertView;
-        }
-
-        class CharacterViewHolder {
-            @InjectView(R.id.character_name) TextView textView;
-            @InjectView(R.id.character_image) ImageView imageView;
-            
-            public CharacterViewHolder(View view){
-                ButterKnife.inject(this, view);
+            @Override
+            public int getCount() {
+                return mCharacters.size();
             }
-            
+
+            @Override
+            public Character getItem(int position) {
+                return mCharacters.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = View.inflate(mContext, R.layout.character_list_item, null);
+                    convertView.setTag(new CharacterViewHolder(convertView));
+                }
+
+                Character character = getItem(position);
+                CharacterViewHolder viewHolder = (CharacterViewHolder) convertView.getTag();
+                viewHolder.textView.setText(character.getName());
+                viewHolder.imageView.setImageResource(CharacterPresenter.getImageResource(mContext, character));
+
+                return convertView;
+            }
+
+            class CharacterViewHolder {
+                @InjectView(R.id.character_name) TextView textView;
+                @InjectView(R.id.character_image) ImageView imageView;
+
+                public CharacterViewHolder(View view){
+                    ButterKnife.inject(this, view);
+                }
+
+            }
         }
+
     }
+
+
 }
