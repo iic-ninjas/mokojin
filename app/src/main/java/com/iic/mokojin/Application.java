@@ -1,7 +1,7 @@
 package com.iic.mokojin;
 
-import android.util.Log;
-
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.iic.mokojin.models.Models;
 import com.iic.mokojin.modules.AndroidModule;
 import com.iic.mokojin.modules.DataModule;
@@ -11,8 +11,6 @@ import com.parse.ParsePush;
 import java.util.Arrays;
 import java.util.List;
 
-import bolts.Continuation;
-import bolts.Task;
 import dagger.ObjectGraph;
 
 /**
@@ -33,17 +31,10 @@ public class Application extends android.app.Application {
 
         mObjectGraph = ObjectGraph.create(getModules().toArray());
 
-        ParsePush.subscribeInBackground("").continueWith(new Continuation<Void, Void>() {
-            @Override
-            public Void then(Task<Void> task) throws Exception {
-                if (task.isFaulted()) {
-                    Log.e(LOG_TAG, "Error registering to push notifications", task.getError());
-                } else {
-                    Log.v(LOG_TAG, "Registerred successfully to push notifications");
-                }
-                return null;
-            }
-        });
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            ParsePush.subscribeInBackground("");
+        }
     }
 
     protected List<Object> getModules() {
