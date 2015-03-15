@@ -1,5 +1,6 @@
 package com.iic.mokojin.data;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.google.common.base.Function;
@@ -37,9 +38,13 @@ public class CurrentSessionStore extends AbstractStore<MokojinBroadcastReceiver.
 
     @Override
     protected Task<Void> onRefreshData() {
-        return GetSessionData.getSessionData().onSuccess(new Continuation<Pair<Match, List<QueueItem>>, Void>() {
+        return GetSessionData.getSessionData().continueWith(new Continuation<Pair<Match, List<QueueItem>>, Void>() {
             @Override
             public Void then(Task<Pair<Match, List<QueueItem>>> pairTask) throws Exception {
+                if (pairTask.isFaulted()) {
+                    Log.e(LOG_TAG, "Error loading session data", pairTask.getError());
+                    return null;
+                }
                 Pair<Match, List<QueueItem>> pair = pairTask.getResult();
                 mCurrentMatch = pair.first;
                 mQueue = pair.second;

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Tekken Time</string>
-    <string name="action_settings">Settings</string>
 
     <string name="vs">VS</string>
     <string name="no_ongoing_matches">No ongoing matches.</string>
@@ -18,5 +17,6 @@
     <string name="ending_match_progress">Ending Match</string>
     <string name="action_good_night">Good Night</string>
     <string name="good_night_progress">Saying good night...</string>
+    <string name="refresh">Refresh</string>
 
 </resources>
