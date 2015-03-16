@@ -68,9 +68,13 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-        scheduleUpdateClock();
 
         return rootView;
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        scheduleUpdateClock();
     }
 
 
@@ -101,17 +105,15 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
                     scheduleUpdateClock();
                     return;
                 }
-                if (null != getActivity()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (null != mQueueAdapter) {
-                                mQueueAdapter.notifyDataSetChanged();
-                                scheduleUpdateClock();
-                            }
-                        }
-                    });
-                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                    if (null != mQueueAdapter) {
+                        mQueueAdapter.notifyDataSetChanged();
+                        scheduleUpdateClock();
+                    }
+                    }
+                });
             }
         }, 1000);
     }
