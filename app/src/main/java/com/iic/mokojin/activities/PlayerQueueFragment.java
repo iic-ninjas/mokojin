@@ -108,10 +108,10 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                    if (null != mQueueAdapter) {
-                        mQueueAdapter.notifyDataSetChanged();
-                        scheduleUpdateClock();
-                    }
+                        if (null != mQueueAdapter) {
+                            mQueueAdapter.notifyDataSetChanged();
+                            scheduleUpdateClock();
+                        }
                     }
                 });
             }
