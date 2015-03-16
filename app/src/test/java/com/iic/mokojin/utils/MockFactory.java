@@ -7,6 +7,7 @@ import com.iic.mokojin.models.Match;
 import com.iic.mokojin.models.Person;
 import com.iic.mokojin.models.Player;
 import com.iic.mokojin.models.QueueItem;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 import java.util.UUID;
@@ -41,8 +42,14 @@ public final class MockFactory {
         return createObject(Match.class, objectId);
     }
 
-    public static QueueItem createQueueItem(String objectID){
-        return createObject(QueueItem.class, objectID);
+    public static QueueItem createQueueItem(String objectId){
+        return createObject(QueueItem.class, objectId);
+    }
+
+    public static ParseInstallation createParseInstallation(String installationId) {
+        ParseInstallation mockedInstallation = mock(ParseInstallation.class);
+        when(mockedInstallation.getInstallationId()).thenReturn(installationId);
+        return mockedInstallation;
     }
 
     private static String randomObjectId(){
