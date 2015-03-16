@@ -37,9 +37,10 @@ public class MainActivity extends AbstractMokojinActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_goodnight){
+        if (id == R.id.action_refresh) {
+            performRefresh();
+        }
+        else if (id == R.id.action_goodnight){
             performGoodNight();
             return true;
         } else if (id == R.id.action_invite_players) {
@@ -55,6 +56,10 @@ public class MainActivity extends AbstractMokojinActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void performRefresh() {
+        mCurrentSessionStore.refreshData();
     }
 
     private void performGoodNight() {
