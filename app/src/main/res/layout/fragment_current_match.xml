@@ -35,19 +35,23 @@
             >
 
             <LinearLayout
+                android:id="@+id/player_a"
                 android:orientation="vertical"
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_gravity="center|top"
                 android:layout_height="wrap_content"
                 android:paddingBottom="14dp"
+                android:clickable="true"
+                android:paddingTop="6dp"
+                android:background="@drawable/pressable_character"
                 >
 
                 <com.iic.mokojin.views.CharacterViewer
                     android:id="@+id/player_a_character"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_height="84dp"
+                    android:layout_height="wrap_content"
                     app:direction="right"
                     />
 
@@ -79,17 +83,22 @@
                 />
 
             <LinearLayout
+                android:id="@+id/player_b"
                 android:layout_gravity="center|top"
                 android:orientation="vertical"
                 android:layout_weight="2"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:paddingTop="6dp"
+                android:background="@drawable/pressable_character"
+                >
 
                 <com.iic.mokojin.views.CharacterViewer
                     android:id="@+id/player_b_character"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_height="84dp"
+                    android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     app:direction="left"
 
