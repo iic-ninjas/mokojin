@@ -44,18 +44,22 @@ public class MainActivity extends AbstractMokojinActivity {
             performGoodNight();
             return true;
         } else if (id == R.id.action_invite_players) {
-            final ProgressHudDialog progressHudDialog = new ProgressHudDialog(this, getResources().getString(R.string.inviting_players_progress));
-            progressHudDialog.show();
-            new InvitePlayersOperation().run().continueWith(new Continuation<Void, Void>() {
-                @Override
-                public Void then(Task<Void> task) throws Exception {
-                    progressHudDialog.dismiss();
-                    return null;
-                }
-            });
+            performInvite();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void performInvite() {
+        final ProgressHudDialog progressHudDialog = new ProgressHudDialog(this, getResources().getString(R.string.inviting_players_progress));
+        progressHudDialog.show();
+        new InvitePlayersOperation().run().continueWith(new Continuation<Void, Void>() {
+            @Override
+            public Void then(Task<Void> task) throws Exception {
+                progressHudDialog.dismiss();
+                return null;
+            }
+        });
     }
 
     private void performRefresh() {
