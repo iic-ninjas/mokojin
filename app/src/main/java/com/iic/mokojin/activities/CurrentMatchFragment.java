@@ -105,28 +105,24 @@ public class CurrentMatchFragment extends AbstractMokojinFragment {
         }, Task.UI_THREAD_EXECUTOR);
     }
 
-    @SuppressWarnings("unused")
-    @OnClick(R.id.player_a_character)
+    @OnClick(R.id.player_a)
     void onPlayerAClick() {
         endMatch(Player.PlayerType.PLAYER_A);
     }
 
-    @SuppressWarnings("unused")
-    @OnClick(R.id.player_b_character)
+    @OnClick(R.id.player_b)
     void onPlayerBClick() {
         endMatch(Player.PlayerType.PLAYER_B);
     }
 
 
-    @SuppressWarnings("unused")
-    @OnLongClick(R.id.player_a_character)
+    @OnLongClick(R.id.player_a)
     boolean onPlayerALongClick() {
         ChooseCharactersActivity.chooseCharacter(getActivity(), mCurrentMatch.getPlayerA());
         return true;
     }
 
-    @SuppressWarnings("unused")
-    @OnLongClick(R.id.player_b_character)
+    @OnLongClick(R.id.player_b)
     boolean onPlayerBLongClick() {
         ChooseCharactersActivity.chooseCharacter(getActivity(), mCurrentMatch.getPlayerB());
         return true;

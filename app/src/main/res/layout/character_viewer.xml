@@ -28,7 +28,7 @@
         android:src="@drawable/player_18"
         app:riv_corner_radius="@dimen/large_avatar_size"
         app:riv_border_width="@dimen/character_border_width"
-        app:riv_border_color="@color/background_dark"
+        app:riv_border_color="@color/pressable_character"
         />
 
 </FrameLayout>
