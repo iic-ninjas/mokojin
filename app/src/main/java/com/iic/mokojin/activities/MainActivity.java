@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.iic.mokojin.R;
 import com.iic.mokojin.cloud.operations.GoodNightOperation;
+import com.iic.mokojin.cloud.operations.InvitePlayersOperation;
 import com.iic.mokojin.data.CurrentSessionStore;
 import com.iic.mokojin.views.ProgressHudDialog;
 
@@ -41,6 +42,16 @@ public class MainActivity extends AbstractMokojinActivity {
         } else if (id == R.id.action_goodnight){
             performGoodNight();
             return true;
+        } else if (id == R.id.action_invite_players) {
+            final ProgressHudDialog progressHudDialog = new ProgressHudDialog(this, getResources().getString(R.string.inviting_players_progress));
+            progressHudDialog.show();
+            new InvitePlayersOperation().run().continueWith(new Continuation<Void, Void>() {
+                @Override
+                public Void then(Task<Void> task) throws Exception {
+                    progressHudDialog.dismiss();
+                    return null;
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);

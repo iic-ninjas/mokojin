@@ -5,4 +5,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_goodnight" android:title="@string/action_good_night"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_invite_players" android:title="Invite Everyone!"
+        app:showAsAction="never" />
 </menu>

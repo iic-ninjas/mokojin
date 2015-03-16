@@ -53,7 +53,7 @@ public class MokojinBroadcastReceiver extends ParsePushBroadcastReceiver {
             }
         }
         catch (JSONException ignored) {
-            // If there was a parsing error, ignore the event
+            super.onPushReceive(context, intent);
         }
 
 

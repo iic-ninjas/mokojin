@@ -74,6 +74,7 @@
                 <category android:name="com.iic.mokojin" />
             </intent-filter>
         </receiver>
+        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/push_icon"/>
     </application>
 
 </manifest>
