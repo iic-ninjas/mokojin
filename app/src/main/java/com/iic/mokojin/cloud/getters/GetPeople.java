@@ -6,6 +6,7 @@ import com.parse.ParseCloud;
 import java.util.HashMap;
 import java.util.List;
 
+import bolts.Continuation;
 import bolts.Task;
 
 /**

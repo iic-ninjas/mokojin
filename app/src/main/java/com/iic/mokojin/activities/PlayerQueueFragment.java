@@ -36,7 +36,11 @@ import de.timroes.android.listview.EnhancedListView;
 
 public class PlayerQueueFragment extends AbstractMokojinFragment {
 
+    private static final String LOG_TAG = PlayerQueueFragment.class.getSimpleName();
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
+    @InjectView(R.id.queue_list_view_container) ViewGroup mListViewContainer;
+    @InjectView(R.id.progress_bar) View mProgressBar;
+    @InjectView(R.id.empty_queue_text) View mEmptyView;
     @InjectView(R.id.add_player_button) View mAddPlayerButton;
     QueueAdapter mQueueAdapter;
 
@@ -55,7 +59,6 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
         View rootView =  inflater.inflate(R.layout.fragment_player_queue, container, false);
         ButterKnife.inject(this, rootView);
 
-        mQueueListView.setEmptyView(rootView.findViewById(R.id.empty_queue_text));
         mQueueAdapter = new QueueAdapter();
         mQueueListView.setAdapter(mQueueAdapter);
         mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
@@ -82,12 +85,29 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
     public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
         mQueueItems = mCurrentSessionStore.getQueue();
         mQueueAdapter.notifyDataSetChanged();
+
+        if (mCurrentSessionStore.wasLoaded()) {
+            mProgressBar.setVisibility(View.INVISIBLE);
+
+            if (mQueueItems.size() > 0) {
+                mEmptyView.setVisibility(View.INVISIBLE);
+                mListViewContainer.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.VISIBLE);
+                mListViewContainer.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            mEmptyView.setVisibility(View.INVISIBLE);
+            mListViewContainer.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mCurrentSessionStore.getEventBus().register(this);
+
     }
 
     @Override
@@ -117,6 +137,9 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
             }
         }, 1000);
     }
+
+
+
 
     @OnItemLongClick(R.id.queue_list_view)
     boolean onPlayerLongClick(int position) {

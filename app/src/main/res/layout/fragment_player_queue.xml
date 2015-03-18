@@ -6,15 +6,30 @@
     tools:context="com.iic.mokojin.PlayerQueueFragment"
     android:background="@color/background" >
 
-    <de.timroes.android.listview.EnhancedListView
-        android:id="@+id/queue_list_view"
+    <FrameLayout
+        android:id="@+id/queue_list_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:transitionName="white_part"
-        android:dividerHeight="0dp"
-        android:divider="@null"
-        tools:listitem="@layout/player_queue_item"
+        android:transitionName="white_part">
+
+        <de.timroes.android.listview.EnhancedListView
+            android:id="@+id/queue_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            tools:listitem="@layout/player_queue_item"
+            />
+    </FrameLayout>
+
+    <com.iic.mokojin.views.LoadingIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_players"
+        android:layout_centerInParent="true"
         />
+
     <TextView
         android:id="@+id/empty_queue_text"
         android:layout_width="match_parent"

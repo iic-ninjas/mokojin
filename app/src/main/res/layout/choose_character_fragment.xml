@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/character_list_view"
-    android:choiceMode="multipleChoice"
-    android:numColumns="@integer/characterColumns"
-    android:background="@color/background"
-    tools:listitem="@layout/character_list_item"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    />
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/character_list_view"
+        android:choiceMode="multipleChoice"
+        android:numColumns="@integer/characterColumns"
+        android:background="@color/background"
+        tools:listitem="@layout/character_list_item"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        />
+
+    <com.iic.mokojin.views.LoadingIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_characters"
+        android:layout_gravity="center"
+        />
+
+
+</FrameLayout>

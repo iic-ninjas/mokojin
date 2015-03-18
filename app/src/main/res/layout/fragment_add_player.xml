@@ -31,18 +31,35 @@
             />
         </FrameLayout>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/people_list_view"
-        android:choiceMode="singleChoice"
-        android:transitionName="white_part"
-        android:background="@color/background"
-        android:dividerHeight="0dp"
-        android:divider="@null"
-        tools:listitem="@layout/person_list_item"
-        />
-</LinearLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/people_list_view"
+                android:choiceMode="singleChoice"
+                android:transitionName="white_part"
+                android:background="@color/background"
+                android:dividerHeight="0dp"
+                android:divider="@null"
+                tools:listitem="@layout/person_list_item"
+                />
+
+
+            <com.iic.mokojin.views.LoadingIndicator
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_players"
+                android:layout_gravity="center"
+                />
+
+
+
+        </FrameLayout>
+    </LinearLayout>
     <com.getbase.floatingactionbutton.AddFloatingActionButton
         android:id="@+id/create_person"
         android:layout_width="wrap_content"

@@ -19,6 +19,7 @@
     <string name="good_night_progress">Saying good night...</string>
     <string name="inviting_players_progress">Inviting players...</string>
     <string name="refresh">Refresh</string>
+    <string name="loading_characters">Loading Characters...</string>
+    <string name="loading_players">Loading Players...</string>
     <string name="invite_players_message">Invite Everyone!</string>
-
 </resources>
