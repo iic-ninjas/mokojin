@@ -78,6 +78,11 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
         return rootView;
     }
 
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        scheduleUpdateClock();
+    }
+
 
     @Subscribe
     public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
