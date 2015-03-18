@@ -53,7 +53,9 @@ public class MokojinBroadcastReceiver extends ParsePushBroadcastReceiver {
             }
         }
         catch (JSONException ignored) {
-            // If there was a parsing error, ignore the event
+            // If "type" doesn't exist on the "data" JSONObject, this isn't a datachange event,
+            // and should be displayed as a regular push by ParsePushBroadcastReceiver
+            super.onPushReceive(context, intent);
         }
 
 

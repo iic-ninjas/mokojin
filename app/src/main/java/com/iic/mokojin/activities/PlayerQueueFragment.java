@@ -68,9 +68,13 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-        scheduleUpdateClock();
 
         return rootView;
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        scheduleUpdateClock();
     }
 
 

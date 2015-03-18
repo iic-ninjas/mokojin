@@ -17,6 +17,8 @@
     <string name="ending_match_progress">Ending Match</string>
     <string name="action_good_night">Good Night</string>
     <string name="good_night_progress">Saying good night...</string>
+    <string name="inviting_players_progress">Inviting players...</string>
     <string name="refresh">Refresh</string>
+    <string name="invite_players_message">Invite Everyone!</string>
 
 </resources>
