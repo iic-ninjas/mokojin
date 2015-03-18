@@ -44,6 +44,7 @@ public abstract class AbstractStore<TBroadcastEvent, TStoreEvent> {
 
     public void refreshData() {
         mLoaded = false;
+        getEventBus().post(produceUpdateEvent());
         onRefreshData().onSuccess(new Continuation<Void, Void>() {
             @Override
             public Void then(Task<Void> task) throws Exception {
