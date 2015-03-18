@@ -3,10 +3,13 @@ package com.iic.mokojin.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +39,11 @@ import de.timroes.android.listview.EnhancedListView;
 
 public class PlayerQueueFragment extends AbstractMokojinFragment {
 
+    private static final String LOG_TAG = PlayerQueueFragment.class.getSimpleName();
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
+    @InjectView(R.id.queue_list_view_container) ViewGroup mListViewContainer;
+    @InjectView(R.id.progress_bar_container) View mProgressBarContainer;
+    @InjectView(R.id.empty_queue_text) View mEmptyView;
     @InjectView(R.id.add_player_button) View mAddPlayerButton;
     QueueAdapter mQueueAdapter;
 
@@ -55,7 +62,6 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
         View rootView =  inflater.inflate(R.layout.fragment_player_queue, container, false);
         ButterKnife.inject(this, rootView);
 
-        mQueueListView.setEmptyView(rootView.findViewById(R.id.empty_queue_text));
         mQueueAdapter = new QueueAdapter();
         mQueueListView.setAdapter(mQueueAdapter);
         mQueueListView.setDismissCallback(new EnhancedListView.OnDismissCallback() {
@@ -68,7 +74,6 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
             }
         });
         mQueueListView.enableSwipeToDismiss();
-        scheduleUpdateClock();
 
         return rootView;
     }
@@ -78,12 +83,40 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
     public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
         mQueueItems = mCurrentSessionStore.getQueue();
         mQueueAdapter.notifyDataSetChanged();
+        Log.v(LOG_TAG, "On UI Thread? " + Boolean.toString(Looper.getMainLooper().getThread() == Thread.currentThread()));
+
+
+        if (mCurrentSessionStore.wasLoaded()) {
+            mProgressBarContainer.setVisibility(View.INVISIBLE);
+
+            if (mQueueItems.size() > 0) {
+                Log.v(LOG_TAG, "Showing data");
+                mEmptyView.setVisibility(View.INVISIBLE);
+                mListViewContainer.setVisibility(View.VISIBLE);
+            } else {
+                Log.v(LOG_TAG, "Showing empty view");
+                mEmptyView.setVisibility(View.VISIBLE);
+                mListViewContainer.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            Log.v(LOG_TAG, "Showing progress bar");
+            mEmptyView.setVisibility(View.INVISIBLE);
+            mListViewContainer.setVisibility(View.INVISIBLE);
+            mProgressBarContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        scheduleUpdateClock();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mCurrentSessionStore.getEventBus().register(this);
+
     }
 
     @Override
@@ -113,6 +146,9 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
             }
         }, 1000);
     }
+
+
+
 
     @OnItemLongClick(R.id.queue_list_view)
     boolean onPlayerLongClick(int position) {

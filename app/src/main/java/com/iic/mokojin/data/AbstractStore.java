@@ -17,6 +17,7 @@ public abstract class AbstractStore<TBroadcastEvent, TStoreEvent> {
 
     private Bus mEventBus;
     private Constructor<? extends TStoreEvent> mStoreEventClassCtor;
+    private boolean mLoaded = false;
 
     public Bus getEventBus() {
         return mEventBus;
@@ -37,10 +38,16 @@ public abstract class AbstractStore<TBroadcastEvent, TStoreEvent> {
         refreshData();
     }
 
+    public boolean wasLoaded() {
+        return mLoaded;
+    }
+
     public void refreshData() {
+        mLoaded = false;
         onRefreshData().onSuccess(new Continuation<Void, Void>() {
             @Override
             public Void then(Task<Void> task) throws Exception {
+                mLoaded = true;
                 getEventBus().post(produceUpdateEvent());
                 return null;
             }

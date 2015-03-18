@@ -76,6 +76,7 @@ public class ChooseCharactersActivity extends ActionBarActivity {
 
         private static final String LOG_TAG = ChooseCharactersFragment.class.getSimpleName();
         @InjectView(R.id.character_list_view) GridView mCharacterListView;
+        @InjectView(R.id.progress_bar_container) View mProgressBarContainer;
         private CharacterAdapter mCharacterAdapter;
         private MenuItem mDoneMenuItem;
 
@@ -160,8 +161,13 @@ public class ChooseCharactersActivity extends ActionBarActivity {
         @Subscribe
         public void refreshCharacters(CharacterStore.CharacterListUpdateEvent event) {
             mCharacters = mCharacterStore.getCharacters();
-
             if (mCharacters.isEmpty()) return;
+
+            if (mCharacterStore.wasLoaded()) {
+                mProgressBarContainer.setVisibility(View.GONE);
+            } else {
+                mProgressBarContainer.setVisibility(View.VISIBLE);
+            }
 
             mCharacterAdapter.notifyDataSetChanged();
 
