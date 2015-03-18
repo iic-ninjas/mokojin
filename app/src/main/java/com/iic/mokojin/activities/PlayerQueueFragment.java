@@ -3,13 +3,10 @@ package com.iic.mokojin.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +39,7 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
     private static final String LOG_TAG = PlayerQueueFragment.class.getSimpleName();
     @InjectView(R.id.queue_list_view) EnhancedListView mQueueListView;
     @InjectView(R.id.queue_list_view_container) ViewGroup mListViewContainer;
-    @InjectView(R.id.progress_bar_container) View mProgressBarContainer;
+    @InjectView(R.id.progress_bar) View mProgressBar;
     @InjectView(R.id.empty_queue_text) View mEmptyView;
     @InjectView(R.id.add_player_button) View mAddPlayerButton;
     QueueAdapter mQueueAdapter;
@@ -88,33 +85,22 @@ public class PlayerQueueFragment extends AbstractMokojinFragment {
     public void refreshQueue(CurrentSessionStore.SessionUpdateEvent event) {
         mQueueItems = mCurrentSessionStore.getQueue();
         mQueueAdapter.notifyDataSetChanged();
-        Log.v(LOG_TAG, "On UI Thread? " + Boolean.toString(Looper.getMainLooper().getThread() == Thread.currentThread()));
-
 
         if (mCurrentSessionStore.wasLoaded()) {
-            mProgressBarContainer.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
 
             if (mQueueItems.size() > 0) {
-                Log.v(LOG_TAG, "Showing data");
                 mEmptyView.setVisibility(View.INVISIBLE);
                 mListViewContainer.setVisibility(View.VISIBLE);
             } else {
-                Log.v(LOG_TAG, "Showing empty view");
                 mEmptyView.setVisibility(View.VISIBLE);
                 mListViewContainer.setVisibility(View.INVISIBLE);
             }
         } else {
-            Log.v(LOG_TAG, "Showing progress bar");
             mEmptyView.setVisibility(View.INVISIBLE);
             mListViewContainer.setVisibility(View.INVISIBLE);
-            mProgressBarContainer.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        scheduleUpdateClock();
     }
 
     @Override

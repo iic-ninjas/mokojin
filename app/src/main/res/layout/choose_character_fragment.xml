@@ -16,26 +16,13 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         />
 
-    <LinearLayout
-        android:id="@+id/progress_bar_container"
+    <com.iic.mokojin.views.LoadingIndicator
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/loading_characters"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading_characters"
-            android:textSize="20sp"
-            />
-
-        <ProgressBar
-            android:indeterminate="true"
-            style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
 </FrameLayout>

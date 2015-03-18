@@ -71,7 +71,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         @InjectView(R.id.people_list_view) ListView mPeopleListView;
         @InjectView(R.id.person_name_edittext) EditText mPersonNameEditText;
         @InjectView(R.id.create_person) ImageButton mAddPlayerButton;
-        @InjectView(R.id.progress_bar_container) View mProgressBarContainer;
+        @InjectView(R.id.progress_bar) View mProgressBar;
 
         private List<Person> mPeople = Collections.emptyList();
 
@@ -205,9 +205,9 @@ public class AddPlayerActivity extends ActionBarActivity {
         public void refreshList(PeopleListStore.PeopleListUpdateEvent event) {
             mPeople = mPeopleListStore.getPeopleListExculding(mCurrentSessionStore.getCurrentlyPlayingPeople());
             if (mPeopleListStore.wasLoaded()) {
-                mProgressBarContainer.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
             } else {
-                mProgressBarContainer.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
             }
             mAdapter.getFilter().filter(null);
         }
