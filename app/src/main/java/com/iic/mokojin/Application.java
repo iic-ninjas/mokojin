@@ -27,7 +27,7 @@ public class Application extends android.app.Application {
         Parse.enableLocalDatastore(this);
         Models.registerModels();
 
-        Parse.initialize(this, "GeJyJhvvsIe540zKyn9rCZwSv7AIEcc11DHQjSAV", "40quo2Icf83unfXkDu2ZJjEcecPsHl03aqiuNsbH");
+        Parse.initialize(this, "ZugXbQHrYWiXAmuf1rWuff7FGK2pcJ5QAeuXFah6", "nrhs75Z3yXJKpbPuXC4w8bTdeznqcysqQE8Pogw0");
 
         mObjectGraph = ObjectGraph.create(getModules().toArray());
 
