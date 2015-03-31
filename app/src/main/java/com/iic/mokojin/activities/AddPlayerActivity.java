@@ -74,6 +74,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         @InjectView(R.id.progress_bar) View mProgressBar;
 
         private List<Person> mPeople = Collections.emptyList();
+        private boolean mNewUserCreated = false;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,8 +110,6 @@ public class AddPlayerActivity extends ActionBarActivity {
                 mPeopleListStore.refreshData();
             }
         }
-
-        private boolean mNewUserCreated = false;
 
         // If there is a person selected in the listview - returns it (as a fulfilled promise)
         // Otherwise - creates a new person, and returns a promise which is fulfilled once that
