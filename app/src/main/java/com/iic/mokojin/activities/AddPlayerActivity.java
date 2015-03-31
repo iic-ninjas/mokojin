@@ -106,7 +106,6 @@ public class AddPlayerActivity extends ActionBarActivity {
 
             // We do this after the unregister, because we don't want the refreshData() call to update the UI
             if (mNewUserCreated) {
-                Log.d(LOG_TAG, "refresh data");
                 mPeopleListStore.refreshData();
             }
         }
