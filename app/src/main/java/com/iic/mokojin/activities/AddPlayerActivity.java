@@ -74,6 +74,7 @@ public class AddPlayerActivity extends ActionBarActivity {
         @InjectView(R.id.progress_bar) View mProgressBar;
 
         private List<Person> mPeople = Collections.emptyList();
+        private boolean mNewUserCreated = false;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,12 +97,18 @@ public class AddPlayerActivity extends ActionBarActivity {
             mPeopleListView.setAdapter(mAdapter);
 
             mPeopleListStore.getEventBus().register(this);
+            mNewUserCreated = false;
         }
 
         @Override
         public void onStop() {
             super.onStop();
             mPeopleListStore.getEventBus().unregister(this);
+
+            // We do this after the unregister, because we don't want the refreshData() call to update the UI
+            if (mNewUserCreated) {
+                mPeopleListStore.refreshData();
+            }
         }
 
         // If there is a person selected in the listview - returns it (as a fulfilled promise)
@@ -112,13 +119,14 @@ public class AddPlayerActivity extends ActionBarActivity {
                 if (null != mProgressDialog){
                     mProgressDialog.setMessage(getResources().getString(R.string.create_user_progress));
                 }
+
                 return new CreatePersonOperation().run(getTextFieldValue()).continueWith(new Continuation<Person, Person>() {
                     @Override
                     public Person then(Task<Person> task) throws Exception {
-                        mPeopleListStore.refreshData();
+                        mNewUserCreated = true;
                         return task.getResult();
                     }
-                });
+                }, Task.UI_THREAD_EXECUTOR);
             } else {
                 return Task.forResult(selectedPerson);
             }
